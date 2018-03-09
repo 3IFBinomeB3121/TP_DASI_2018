@@ -1,0 +1,9 @@
+-RAJOUTER AGE DANS PERSONNE 
+-FAIRE LA METHODE POUR CALCULER DIRECTEMENT L'AGE DANS PERSONNE
+-CHECKER SI DATE EST PAS TROP DEPRECATED POUR DATE DE NAISSANCE PERSONNE
+-FIND CLIENT FIND EMPLOYE (jpql) qui renvoie liste de personne/client ou employe
+-ServiceEmploye peut etre implémenté mais doit rester optionnel (sert juste à ajouter des employes au debut)
+-Faire methode qui passe tout en minuscule dans la bdd
+-Verifier si y'a pas des attributs qui possèdent des contraintes (ex plus de 18ans)
+-modifier mail à envoyer en cas d'inscription (respecter le sujet de toi)
+-a long terme : vérifier que le mail possède un arobase et une extension
