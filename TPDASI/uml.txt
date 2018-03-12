@@ -1,0 +1,50 @@
+@startuml
+class Personne {
+  civilité : String
+  nom : String
+  prénom : String
+  date_naissance : Date
+  adresse : String
+  email : String
+  tel : String
+  mdp : String
+}
+
+class Client {
+
+}
+
+class Intervention {
+  description : String
+  horodate : String
+}
+
+class Incident {
+}
+
+class Animal {
+   type_animal : String
+}
+
+class Livraison {
+   objet : String
+   entreprise : String
+}
+
+class Employe {
+  disponibilité : boolean
+  horaires_intervention : boolean[][]
+}
+
+class Attestation_intervention {
+  etat : boolean
+  heure_fin : int
+  commentaire : String
+}
+
+Personne ^-- Employe
+Personne ^-- Client
+Intervention ^-- Incident
+Intervention ^-- Animal
+Intervention ^-- Livraison
+@enduml
