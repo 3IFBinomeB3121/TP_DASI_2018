@@ -7,6 +7,7 @@ package modele;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,7 +25,8 @@ public abstract class Intervention implements Serializable {
     private String description;
     private LocalDateTime horodate;
     private boolean estFini;
-    private int heureFin;
+    private String etat;
+    private LocalTime heureFin;
     private String commentaireEmp;
     private Long idClient;
     private Long idEmploye;
@@ -59,12 +61,16 @@ public abstract class Intervention implements Serializable {
         return estFini;
     }
 
-    public int getHeureFin() {
+    public LocalTime getHeureFin() {
         return heureFin;
     }
 
     public String getCommentaireEmp() {
         return commentaireEmp;
+    }
+
+    public String getEtat() {
+        return etat;
     }
 
     public void setDescription(String description) {
@@ -79,7 +85,7 @@ public abstract class Intervention implements Serializable {
         this.estFini = estFini;
     }
 
-    public void setHeureFin(int heureFin) {
+    public void setHeureFin(LocalTime heureFin) {
         this.heureFin = heureFin;
     }
 
@@ -94,11 +100,14 @@ public abstract class Intervention implements Serializable {
     public void setIdEmploye(Long idEmploye) {
         this.idEmploye = idEmploye;
     }
-    
+
+    public void setEtat(String etat) {
+        this.etat = etat;
+    }
 
     @Override
     public String toString() {
-        return "Intervention{" + "description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + '}';
+        return "Intervention{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", idClient=" + idClient + ", idEmploye=" + idEmploye + '}';
     }
     
     

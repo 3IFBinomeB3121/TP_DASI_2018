@@ -92,6 +92,24 @@ public class ServicePersonne {
     
     public static boolean verifierValiditeMail(String mail){
        //TODO
+       // Verifier qu'elle n'existe pas deja dans la bdd 
+       // 2 sol : comaparer avec tous les e-mails ou faire une requete
+       // avec une condition sur le mail et si aucun resultat alors
+       // l'e-mail est valide
+       // Coder la fonction JSQL dans Personne DAO
+        int i;
+        boolean estEgal = false;
+        List<String> listeMail = PersonneDAO.obtenirEmail();
+        for (i=0; i<listeMail.size(); i++){
+            if (listeMail.get(i).equals(mail)){
+                estEgal = true;
+            }
+        }
+        
+        if (estEgal){
+            return false;
+        }
+        
         return true;
     }
     
@@ -106,6 +124,10 @@ public class ServicePersonne {
     
     public static void SeConnecter () {
         //TODO
+        // Idée : Comparer avec tous les pseudo de la base (e-mail ici) et voir 
+        // s'il existe déja. Si oui --> verifier que le mot de passe est le même
+        int i;
+        
     }
     
     public static void SeDeconnecter () {
@@ -114,8 +136,10 @@ public class ServicePersonne {
     public static void AvertirEmploye (Employe emp, Intervention inter) {
         //TODO
         Personne cli = PersonneDAO.findPersonneByIndex(inter.getIdClient());
-        System.out.println("Intervention" + inter.getClass() + "demandée le "+ inter.getHorodate() + "pour " + cli.getNom() + " " + cli.getPrenom() + ""
-                + "(#" + cli.getId()+")," + cli.getAdresse() +" : "+inter.getDescription());
+        System.out.println("Intervention" + inter.getClass() + "demandée le "
+                + inter.getHorodate() + "pour " + cli.getNom() + " " 
+                + cli.getPrenom() + "" + "(#" + cli.getId() + ")," 
+                + cli.getAdresse() + " : " +inter.getDescription());
         //TODO: ajouter la distance entre l'employé et l'intervention
     }
     public static void AvertirClient (Client cli) {
@@ -125,12 +149,12 @@ public class ServicePersonne {
     public static List<Intervention> AfficherOpeDuJour (Employe emp) {
         //TODO
         LocalDateTime today = LocalDateTime.now();
-        ArrayList<Intervention> listInterv;
+        ArrayList<Intervention> listInterv; // Verifier s'il ne faut pas faire un new
         listInterv = (ArrayList<Intervention>) InterventionDAO.RechercherInterventionParHorodateClient(emp.getId(), today);
         return listInterv;
     }
     
-    public static List<Intervention> AfficherHistorique( Client cli) {
+    public static List<Intervention> AfficherHistorique(Client cli) {
         //TODO
         LocalDateTime today = LocalDateTime.now();
         ArrayList<Intervention> listInterv;
@@ -140,10 +164,22 @@ public class ServicePersonne {
     
     public static void DemanderIntervention (Client cli, Intervention interv) {
         //TODO intervention DAO.Persist
+        interv.setIdClient(cli.getId());
+        
     }
     
-    public static void FinIntervention (Employe emp) {
+    public static void FinIntervention (Employe emp, String etat, String commentaireEmp, Intervention interv) {
         //TODO
+        LocalTime t1 = LocalTime.now();
+        interv.setHeureFin(t1);
+        interv.setCommentaireEmp(commentaireEmp);
+        interv.setEtat(etat);
+        interv.setEstFini(true);
+        System.out.println("L'intervention a été effectuée à " + t1 + ".\r\n Etat de"
+            + " l'intervention : " + etat + "\r\n");
+        if (commentaireEmp != ""){
+            System.out.println("Commentaire de l'employé : " + commentaireEmp);
+        }
     }
     
 }

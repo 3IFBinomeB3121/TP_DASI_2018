@@ -9,6 +9,8 @@ import com.google.maps.model.LatLng;
 import static dao.JpaUTIL.obtenirEntityManager;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import modele.Client;
 import modele.Employe;
 import modele.Personne;
@@ -47,6 +49,13 @@ public class PersonneDAO {
         return listEmploye ;
     }
     
-    
+    public static List<String> obtenirEmail(){
+        
+        EntityManager em = JpaUTIL.obtenirEntityManager();
+        Query query = em.createQuery("select c.mail from client c");
+        List<String> listMail = query.getResultList();
+        // Retourner l'ensemble des mails des clients/employés pour voir s'il n'est pas déja inscrit
+        return listMail;
+    }
     
 }
