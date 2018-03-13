@@ -12,6 +12,8 @@ import static dao.JpaUTIL.obtenirEntityManager;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import modele.Animal;
 import modele.Incident;
 import modele.Intervention;
@@ -22,6 +24,15 @@ import modele.Livraison;
  * @author William
  */
 public class InterventionDAO {
+    // Faire un persist général
+    // et un merge général !
+    public static void persist(Intervention inter){
+        obtenirEntityManager().persist(inter);
+    }
+    
+    public static Intervention update(Intervention inter){
+        return obtenirEntityManager().merge(inter);
+    }
     
     public static void persistIncident(Incident inci) {
         obtenirEntityManager().persist(inci);
@@ -52,7 +63,11 @@ public class InterventionDAO {
     }
     
     public static List<Intervention> RechercherInterventionParClient(Long idClient) {
-        List<Intervention> listIntervention = new ArrayList<>() ; 
+        List<Intervention> listIntervention; 
+        EntityManager em = JpaUTIL.obtenirEntityManager();
+        Query query = em.createQuery("SELECT * FROM Intervention i where"
+                + " i.idClient = " + idClient);
+        listIntervention = query.getResultList();
         //TODO :
         // Rechercher les interventions en fonction de l'id du client (pour AfficherHistorique)
         return listIntervention ;

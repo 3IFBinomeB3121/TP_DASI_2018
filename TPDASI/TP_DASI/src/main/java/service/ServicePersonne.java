@@ -7,6 +7,7 @@ package service;
 
 import com.google.maps.model.LatLng;
 import dao.InterventionDAO;
+import static dao.InterventionDAO.update;
 import dao.JpaUTIL;
 import dao.PersonneDAO;
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import modele.Client;
 import modele.Employe;
@@ -106,11 +108,7 @@ public class ServicePersonne {
             }
         }
         
-        if (estEgal){
-            return false;
-        }
-        
-        return true;
+        return !estEgal;
     }
     
     /*public static void afficherPersonnesPersistantes(){
@@ -164,22 +162,45 @@ public class ServicePersonne {
     
     public static void DemanderIntervention (Client cli, Intervention interv) {
         //TODO intervention DAO.Persist
-        interv.setIdClient(cli.getId());
-        
+        Intervention intervention;
+        JpaUTIL.creerEntityManager();
+        JpaUTIL.ouvrirTransaction();
+        // On récupére les infos
+        intervention = update(interv);
+        // On fait nos modifications
+        intervention.setIdClient(cli.getId());
+        LocalTime t1 = LocalTime.now();
+        // On recherche les employes dispo (voir condition dans DAO)
+        List<Employe> listEmployeDispo = PersonneDAO.RechercherEmployeDisponible(cli.getCoords(), t1);
+        // On affecte le premier, mettre un try/catch pour gérer concurrence
+        intervention.setIdEmploye(listEmployeDispo.get(0).getId());
+        // On persist et valide (pour l'instant)
+        InterventionDAO.persist(intervention);
+        JpaUTIL.validerTransaction();
     }
     
     public static void FinIntervention (Employe emp, String etat, String commentaireEmp, Intervention interv) {
         //TODO
+        Intervention intervention;
+        JpaUTIL.creerEntityManager();
+        JpaUTIL.ouvrirTransaction();
+        // On récupére les infos
+        intervention = update(interv);
+        
         LocalTime t1 = LocalTime.now();
-        interv.setHeureFin(t1);
-        interv.setCommentaireEmp(commentaireEmp);
-        interv.setEtat(etat);
-        interv.setEstFini(true);
-        System.out.println("L'intervention a été effectuée à " + t1 + ".\r\n Etat de"
-            + " l'intervention : " + etat + "\r\n");
-        if (commentaireEmp != ""){
+        intervention.setHeureFin(t1);
+        intervention.setCommentaireEmp(commentaireEmp);
+        intervention.setEtat(etat);
+        intervention.setEstFini(true);
+        System.out.println("L'intervention a été effectuée à " + t1
+            + ".\r\n Etat de l'intervention : " + etat + "\r\n");
+        if (!commentaireEmp.equals("")){
             System.out.println("Commentaire de l'employé : " + commentaireEmp);
         }
+        
+        // On persist et valide (pour l'instant)
+        InterventionDAO.persist(intervention);
+        JpaUTIL.validerTransaction();
     }
     
 }
