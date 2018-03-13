@@ -5,6 +5,7 @@
  */
 package modele;
 
+import java.time.LocalDateTime;
 import javax.persistence.Entity;
 
 /**
@@ -19,8 +20,8 @@ public class Animal extends Intervention{
     public Animal() {
     }
 
-    public Animal(String description, String horodate, boolean estFini, int heureFin, String commentaireEmp, String unTypeAnimal) {
-        super(description, horodate, estFini, heureFin, commentaireEmp);
+    public Animal(String description, LocalDateTime horodate, String unTypeAnimal) {
+        super(description, horodate);
         this.typeAnimal = unTypeAnimal;
     }
 

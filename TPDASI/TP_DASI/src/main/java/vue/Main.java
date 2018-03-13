@@ -6,6 +6,7 @@
 package vue;
 
 import dao.JpaUTIL;
+import java.time.LocalDate;
 import java.util.Date;
 import modele.Client;
 import service.ServicePersonne;
@@ -21,7 +22,7 @@ public class Main {
      */
     public static void main(String[] args) {
         JpaUTIL.init();
-        Date d1 = new Date(97,03,03);
+        LocalDate d1 = LocalDate.of(1997,03,03);
         // TODO code application logic here
         Client cli = new Client("Monsieur", "Michael", "Jackson", d1,"1900 route de Vins, 83143, LE VAL", "chris@hotmail.fr", "coucou");
         ServicePersonne.ajouterEmploye();

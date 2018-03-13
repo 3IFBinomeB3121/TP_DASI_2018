@@ -5,6 +5,7 @@
  */
 package modele;
 
+import java.time.LocalDate;
 import java.util.Date;
 import javax.persistence.Entity;
 
@@ -15,7 +16,7 @@ import javax.persistence.Entity;
 @Entity
 public class Client extends Personne {
 
-    public Client( String civilite, String nom, String prenom, Date dateNaissance, String adresse, String mail, String motdepasse) {
+    public Client( String civilite, String nom, String prenom, LocalDate dateNaissance, String adresse, String mail, String motdepasse) {
         super(civilite, nom, prenom, dateNaissance, adresse, mail, motdepasse);
     }
 

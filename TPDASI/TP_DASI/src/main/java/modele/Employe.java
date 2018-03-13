@@ -5,7 +5,8 @@
  */
 package modele;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import javax.persistence.Entity;
 
 /**
@@ -16,10 +17,10 @@ import javax.persistence.Entity;
 public class Employe extends Personne {
     
     private boolean disponibilite;
-    private int heureDebutDispo;
-    private int heureFinDispo;
+    private LocalTime heureDebutDispo;
+    private LocalTime heureFinDispo;
 
-    public Employe(boolean disponibilite, int heureDebutDispo, int heureFinDispo,String civilite, String nom, String prenom, Date dateNaissance,String adresse, String mail, String motdepasse) {
+    public Employe(boolean disponibilite, LocalTime heureDebutDispo, LocalTime heureFinDispo, String civilite, String nom, String prenom, LocalDate dateNaissance,String adresse, String mail, String motdepasse) {
         super(civilite, nom, prenom, dateNaissance, adresse, mail, motdepasse);
         this.disponibilite = disponibilite;
         this.heureDebutDispo = heureDebutDispo;
@@ -28,6 +29,31 @@ public class Employe extends Personne {
 
     public Employe() {
     }
+
+    public boolean isDisponibilite() {
+        return disponibilite;
+    }
+
+    public void setDisponibilite(boolean disponibilite) {
+        this.disponibilite = disponibilite;
+    }
+
+    public LocalTime getHeureDebutDispo() {
+        return heureDebutDispo;
+    }
+
+    public void setHeureDebutDispo(LocalTime heureDebutDispo) {
+        this.heureDebutDispo = heureDebutDispo;
+    }
+
+    public LocalTime getHeureFinDispo() {
+        return heureFinDispo;
+    }
+
+    public void setHeureFinDispo(LocalTime heureFinDispo) {
+        this.heureFinDispo = heureFinDispo;
+    }
+    
     
     @Override
     public String toString() {

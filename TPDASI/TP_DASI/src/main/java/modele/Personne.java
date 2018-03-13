@@ -7,6 +7,7 @@ package modele;
 
 import com.google.maps.model.LatLng;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,8 +32,7 @@ public abstract class Personne implements Serializable {
     protected String civilite;
     protected String nom;
     protected String prenom;
-    @Temporal(javax.persistence.TemporalType.DATE)
-    protected Date dateNaissance;
+    protected LocalDate dateNaissance;
     protected int age;
     protected String adresse;
     protected String mail;
@@ -46,7 +46,7 @@ public abstract class Personne implements Serializable {
     public Personne() {
     }
 
-    public Personne( String civilite, String nom, String prenom, Date dateNaissance, String adresse, String mail, String motdepasse) {
+    public Personne( String civilite, String nom, String prenom, LocalDate dateNaissance, String adresse, String mail, String motdepasse) {
         this.civilite = civilite;
         this.nom = nom;
         this.prenom = prenom;
@@ -67,7 +67,7 @@ public abstract class Personne implements Serializable {
     public String getPrenom() {
         return prenom;
     }
-    public Date getDateNaissance() {
+    public LocalDate getDateNaissance() {
         return dateNaissance;
     }
 
@@ -106,7 +106,7 @@ public abstract class Personne implements Serializable {
     public void setPrenom(String prenom) {
         this.prenom = prenom;
     }
-    public void setDateNaissance(Date dateNaissance) {
+    public void setDateNaissance(LocalDate dateNaissance) {
         this.dateNaissance = dateNaissance;
     }
 

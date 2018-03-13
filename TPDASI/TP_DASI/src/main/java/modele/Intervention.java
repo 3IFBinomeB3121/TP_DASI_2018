@@ -6,6 +6,7 @@
 package modele;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,7 +22,7 @@ public abstract class Intervention implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
     private String description;
-    private String horodate;
+    private LocalDateTime horodate;
     private boolean estFini;
     private int heureFin;
     private String commentaireEmp;
@@ -29,16 +30,15 @@ public abstract class Intervention implements Serializable {
     private Long idEmploye;
 
     public Intervention() {
+        this.estFini = false;
     }
-
-    public Intervention(String description, String horodate, boolean estFini, int heureFin, String commentaireEmp) {
+    
+    public Intervention(String description, LocalDateTime horodate) {
         this.description = description;
         this.horodate = horodate;
-        this.estFini = estFini;
-        this.heureFin = heureFin;
-        this.commentaireEmp = commentaireEmp;
+        this.estFini = false;
     }
-
+    
     public Long getIdEmploye() {
         return idEmploye;
     }
@@ -50,8 +50,8 @@ public abstract class Intervention implements Serializable {
     public String getDescription() {
         return description;
     }
-
-    public String getHorodate() {
+   
+    public LocalDateTime getHorodate() {
         return horodate;
     }
 
@@ -71,7 +71,7 @@ public abstract class Intervention implements Serializable {
         this.description = description;
     }
 
-    public void setHorodate(String horodate) {
+    public void setHorodate(LocalDateTime horodate) {
         this.horodate = horodate;
     }
 

@@ -35,7 +35,7 @@ public class PersonneDAO {
         obtenirEntityManager().merge(cli);
     }
     
-    public static Personne findPersonneByIndex (int index) {
+    public static Personne findPersonneByIndex (Long index) {
         return obtenirEntityManager().find(Employe.class, index);
     }
     

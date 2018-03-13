@@ -5,6 +5,7 @@
  */
 package modele;
 
+import java.time.LocalDateTime;
 import javax.persistence.Entity;
 
 /**
@@ -20,8 +21,8 @@ public class Livraison extends Intervention{
     public Livraison() {
     }
 
-    public Livraison(String objet, String entreprise, String description, String horodate, boolean estFini, int heureFin, String commentaireEmp) {
-        super(description, horodate, estFini, heureFin, commentaireEmp);
+    public Livraison(String objet, String entreprise, String description, LocalDateTime horodate) {
+        super(description, horodate);
         this.objet = objet;
         this.entreprise = entreprise;
     }

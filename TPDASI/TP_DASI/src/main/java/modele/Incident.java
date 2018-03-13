@@ -5,6 +5,7 @@
  */
 package modele;
 
+import java.time.LocalDateTime;
 import javax.persistence.Entity;
 
 /**
@@ -17,8 +18,8 @@ public class Incident extends Intervention {
     public Incident() {
     }
 
-    public Incident(String description, String horodate, boolean estFini, int heureFin, String commentaireEmp) {
-        super(description, horodate, estFini, heureFin, commentaireEmp);
+    public Incident(String description, LocalDateTime horodate) {
+        super(description, horodate);
     }
 
     @Override
