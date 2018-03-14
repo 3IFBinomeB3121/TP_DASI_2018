@@ -66,7 +66,8 @@ public class InterventionDAO {
         List<Intervention> listIntervention; 
         EntityManager em = JpaUTIL.obtenirEntityManager();
         Query query = em.createQuery("SELECT * FROM Intervention i where"
-                + " i.idClient = " + idClient);
+                + " i.idClient =:idDuClient");
+        query.setParameters("idDuClient", idClient);
         listIntervention = query.getResultList();
         //TODO :
         // Rechercher les interventions en fonction de l'id du client (pour AfficherHistorique)
@@ -74,9 +75,14 @@ public class InterventionDAO {
     }
     
     public static List<Intervention> RechercherInterventionParEmploye(Long idEmploye) {
-        List<Intervention> listIntervention = new ArrayList<>() ; 
+        List<Intervention> listIntervention; 
+        EntityManager em = JpaUTIL.obtenirEntityManager();
+        Query query = em.createQuery("SELECT * FROM Intervention i where"
+                + " i.idEmploye =:idDeEmploye");
+        query.setParameters("idDeEmploye", idEmploye);
+        listIntervention = query.getResultList();
         //TODO :
-        // Rechercher les interventions en fonction de l'id de l'employe (pour AfficherOpeDuJour)
+        // Rechercher les interventions en fonction de l'id du client (pour AfficherHistorique)
         return listIntervention ;
     }
     
