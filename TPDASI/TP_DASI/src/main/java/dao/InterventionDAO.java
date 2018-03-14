@@ -87,15 +87,20 @@ public class InterventionDAO {
     }
     
     public static List<Intervention> RechercherInterventionParHorodateClient(Long idClient, LocalDateTime horodate) {
-        List<Intervention> listIntervention = new ArrayList<>() ; 
         //TODO :
         // Rechercher les interventions en fonction de l'id du client (pour AfficherHistorique)
         //et de la date demandée
+        List<Intervention> listIntervention; 
+        EntityManager em = JpaUTIL.obtenirEntityManager();
+        Query query = em.createQuery("SELECT * FROM Intervention i where"
+                + " i.horodate =:horo");
+        query.setParameters("horo", horodate);
+        listIntervention = query.getResultList();
         return listIntervention ;
     }
     
     public static List<Intervention> RechercherInterventionParHorodateEmploye(Long idEmploye, LocalDateTime horodate) {
-        List<Intervention> listIntervention = new ArrayList<>() ; 
+        List<Intervention> listIntervention; 
         //TODO :
         // Rechercher les interventions en fonction de l'id de l'employe (pour AfficherOpeDuJour)
         // et de la date demandée
