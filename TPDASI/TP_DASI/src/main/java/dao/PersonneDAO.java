@@ -64,5 +64,34 @@ public class PersonneDAO {
         // Retourner l'ensemble des mails des clients/employés pour voir s'il n'est pas déja inscrit
         return listMail;
     }
+<<<<<<< HEAD
+=======
+
+    public static boolean verifierExistenceMail(String mail){
+
+        EntityManager em = JpaUTIL.obtenirEntityManager();
+        Query query = em.createQuery("select c.mail from Client c where c.mail=:mailAverif");
+        query.setParameter("mailAverif", mail);
+        List<String> listMail = query.getResultList();
+        if (listMail.size() == 0){
+            return false;
+        }
+        // Retourner true si le mail correspond à un mail de la base
+        // Meme methode qu'obtenir mail -> Voir avec William laquelle garder 
+        return true;
+    }
+    
+    public static boolean verifierCorrespondanceMdp(String mail, String leMotDePasse){
+        EntityManager em = JpaUTIL.obtenirEntityManager();
+        Query query = em.createQuery("select c.motdepasse from Client c where c.mail=:mailAverif");
+        query.setParameter("mailAverif", mail);
+        String mdpAcomparer = query.getSingleResultList();
+        if (mdpAcomparer.equals(leMotDePasse)){
+            return true;
+        }
+        // Retourner true si mot de passe correspond au pseudo sinon false
+        return false;
+    }
+>>>>>>> d6113b4d0951b4b92654db749de7a069c88b128c
     
 }

@@ -120,12 +120,22 @@ public class ServicePersonne {
         }
     }*/
     
-    public static void SeConnecter () {
+    public static boolean SeConnecter (String mail, String mdp) {
         //TODO
         // Idée : Comparer avec tous les pseudo de la base (e-mail ici) et voir 
         // s'il existe déja. Si oui --> verifier que le mot de passe est le même
+<<<<<<< HEAD
         int i;
         
+=======
+        // Retourne true si le mail et le mot de passe correspond sinon retourne false
+        boolean existe = PersonneDAO.verfierExistenceMail(mail);
+        if (existe){
+            boolean mdpCorrespond = verifierCorrespondanceMdp(mdp);
+            return mdpCorrespond;
+        }
+        return false;
+>>>>>>> d6113b4d0951b4b92654db749de7a069c88b128c
     }
     
     public static void SeDeconnecter () {
