@@ -7,7 +7,6 @@ package dao;
 
 import com.google.maps.model.LatLng;
 import static dao.JpaUTIL.obtenirEntityManager;
-import java.time.LocalTime;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -41,16 +40,16 @@ public class PersonneDAO {
         return obtenirEntityManager().find(Employe.class, index);
     }
     
-    public static List<Employe> RechercherEmployeDisponible(LatLng coord, LocalTime heureInter) {
+    public static List<Employe> RechercherEmployeDisponible(LatLng coord, int heureInter) {
         List<Employe> listEmploye; 
         //TODO :
         // Rechercher un employé en fction de sa disponibilité et comparer avec les coordonnées
-        // du client pour une range de 5km
-        // Convertir l'heure en un int de deux chiffre !
+        // du client pour une distance de 5km
+        // heureFinDispo et heureDebutDispo sont des LocalTime --> Voir comment on fait : int ou conversion ?
         EntityManager em = JpaUTIL.obtenirEntityManager();
         Query query = em.createQuery("select e from Employe e where"
                 + " disponibilite AND heureDebutDispo<=:heureDebInter "
-                        + "AND :heureDebInter <= heureFinDispo");
+                        + "AND heureFinDispo >= :heureDebInter");
         query.setParameter("heureDebInter", heureInter);
         listEmploye = query.getResultList();
         return listEmploye;
@@ -64,34 +63,26 @@ public class PersonneDAO {
         // Retourner l'ensemble des mails des clients/employés pour voir s'il n'est pas déja inscrit
         return listMail;
     }
-<<<<<<< HEAD
-=======
 
-    public static boolean verifierExistenceMail(String mail){
+    public static List<String> verifierExistenceMail(String mail){
 
         EntityManager em = JpaUTIL.obtenirEntityManager();
         Query query = em.createQuery("select c.mail from Client c where c.mail=:mailAverif");
         query.setParameter("mailAverif", mail);
         List<String> listMail = query.getResultList();
-        if (listMail.size() == 0){
-            return false;
-        }
+        return listMail;
+        
         // Retourner true si le mail correspond à un mail de la base
         // Meme methode qu'obtenir mail -> Voir avec William laquelle garder 
-        return true;
     }
     
-    public static boolean verifierCorrespondanceMdp(String mail, String leMotDePasse){
+    public static List<String> verifierCorrespondanceMdp(String mail, String leMotDePasse){
         EntityManager em = JpaUTIL.obtenirEntityManager();
         Query query = em.createQuery("select c.motdepasse from Client c where c.mail=:mailAverif");
         query.setParameter("mailAverif", mail);
-        String mdpAcomparer = query.getSingleResultList();
-        if (mdpAcomparer.equals(leMotDePasse)){
-            return true;
-        }
+        List<String> mdpAcomparer = query.getResultList();
+        
         // Retourner true si mot de passe correspond au pseudo sinon false
-        return false;
+        return mdpAcomparer;
     }
->>>>>>> d6113b4d0951b4b92654db749de7a069c88b128c
-    
 }

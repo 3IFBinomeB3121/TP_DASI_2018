@@ -21,8 +21,8 @@ public class Livraison extends Intervention{
     public Livraison() {
     }
 
-    public Livraison(String objet, String entreprise, String description, LocalDateTime horodate) {
-        super(description, horodate);
+    public Livraison(String objet, String entreprise, String description, Long idclient, LocalDateTime horodate) {
+        super(description, idclient, horodate);
         this.objet = objet;
         this.entreprise = entreprise;
     }

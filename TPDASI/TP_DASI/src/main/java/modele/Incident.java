@@ -18,8 +18,8 @@ public class Incident extends Intervention {
     public Incident() {
     }
 
-    public Incident(String description, LocalDateTime horodate) {
-        super(description, horodate);
+    public Incident(String description, Long idclient, LocalDateTime horodate) {
+        super(description, idclient, horodate);
     }
 
     @Override

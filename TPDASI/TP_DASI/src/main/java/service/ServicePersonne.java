@@ -56,6 +56,7 @@ public class ServicePersonne {
         PersonneDAO.persistEmploye(emp5);
         //On commit la transaction
         JpaUTIL.validerTransaction();
+        JpaUTIL.fermerEntityManager();
     }
     
     public static void inscrireClient(Client cli) {
@@ -73,12 +74,12 @@ public class ServicePersonne {
         if (mailValide){
             System.out.println("Bonjour " + cli.getPrenom() + ",\r\n"
                     + "Nous vous confirmons votre inscription"
-                    + "au service PROACT'IF. Votre numéro de client"
+                    + " au service PROACT'IF. Votre numéro de client"
                     + " est : " + cli.getId());
         }
         else {
             System.out.println("Bonjour " + cli.getPrenom() + ",\r\n"
-                    + "Votre inscription au service PROACT'IF a"
+                    + "Votre inscription au service PROACT'IF a "
                     + "malencontreusement échoué... Merci de recommencer"
                     + " ultérieurement.");
         }
@@ -86,6 +87,7 @@ public class ServicePersonne {
         PersonneDAO.persistClient(cli);
         //On commit la transaction
         JpaUTIL.validerTransaction();
+        JpaUTIL.fermerEntityManager();
     }
     
     public static LatLng calculerCoord(String adresse){
@@ -98,7 +100,8 @@ public class ServicePersonne {
        // 2 sol : comaparer avec tous les e-mails ou faire une requete
        // avec une condition sur le mail et si aucun resultat alors
        // l'e-mail est valide
-       // Coder la fonction JSQL dans Personne DAO
+       // Coder la fonction JPQL dans Personne DAO
+        
         int i;
         boolean estEgal = false;
         List<String> listeMail = PersonneDAO.obtenirEmail();
@@ -124,18 +127,32 @@ public class ServicePersonne {
         //TODO
         // Idée : Comparer avec tous les pseudo de la base (e-mail ici) et voir 
         // s'il existe déja. Si oui --> verifier que le mot de passe est le même
-<<<<<<< HEAD
-        int i;
-        
-=======
         // Retourne true si le mail et le mot de passe correspond sinon retourne false
-        boolean existe = PersonneDAO.verfierExistenceMail(mail);
-        if (existe){
-            boolean mdpCorrespond = verifierCorrespondanceMdp(mdp);
-            return mdpCorrespond;
+        
+        //On vérifie si l'entity manager est ouvert
+        JpaUTIL.creerEntityManager();
+        //On commence une transaction
+        JpaUTIL.ouvrirTransaction();
+        
+        List<String> listMail = PersonneDAO.verifierExistenceMail(mail);
+        if (listMail.isEmpty()){
+            JpaUTIL.validerTransaction();
+            JpaUTIL.fermerEntityManager();
+            return false;
         }
-        return false;
->>>>>>> d6113b4d0951b4b92654db749de7a069c88b128c
+        else {
+            List<String> mdpCorrespond = PersonneDAO.verifierCorrespondanceMdp(mail, mdp);
+            if(mdpCorrespond.isEmpty()){
+                JpaUTIL.validerTransaction();
+                JpaUTIL.fermerEntityManager();
+                return false;
+            }
+            else {
+                JpaUTIL.validerTransaction();
+                JpaUTIL.fermerEntityManager();
+                return mdpCorrespond.get(0).equals(mdp);
+            }
+        }
     }
     
     public static void SeDeconnecter () {
@@ -143,12 +160,21 @@ public class ServicePersonne {
     }
     public static void AvertirEmploye (Employe emp, Intervention inter) {
         //TODO
+        //On vérifie si l'entity manager est ouvert
+        JpaUTIL.creerEntityManager();
+        //On commence une transaction
+        JpaUTIL.ouvrirTransaction();
+        
         Personne cli = PersonneDAO.findPersonneByIndex(inter.getIdClient());
         System.out.println("Intervention" + inter.getClass() + "demandée le "
                 + inter.getHorodate() + "pour " + cli.getNom() + " " 
                 + cli.getPrenom() + "" + "(#" + cli.getId() + ")," 
-                + cli.getAdresse() + " : " +inter.getDescription());
+                + cli.getAdresse() + " : " + inter.getDescription());
+        
         //TODO: ajouter la distance entre l'employé et l'intervention
+        
+        JpaUTIL.validerTransaction();
+        JpaUTIL.fermerEntityManager();
     }
     public static void AvertirClient (Client cli) {
         //TODO
@@ -156,40 +182,67 @@ public class ServicePersonne {
     
     public static List<Intervention> AfficherOpeDuJour (Employe emp) {
         //TODO
+        //On vérifie si l'entity manager est ouvert
+        JpaUTIL.creerEntityManager();
+        JpaUTIL.ouvrirTransaction();
+        
         LocalDateTime today = LocalDateTime.now();
+        //int jour = today.getDayOfYear();
         ArrayList<Intervention> listInterv; // Verifier s'il ne faut pas faire un new
-        listInterv = (ArrayList<Intervention>) InterventionDAO.RechercherInterventionParHorodateClient(emp.getId(), today);
+        listInterv = (ArrayList<Intervention>) InterventionDAO.RechercherInterventionParHorodateEmploye(emp.getId(), today);
+        JpaUTIL.validerTransaction();
+        JpaUTIL.fermerEntityManager();
         return listInterv;
     }
     
     public static List<Intervention> AfficherHistorique(Client cli) {
         //TODO
+        //On vérifie si l'entity manager est ouvert
+        JpaUTIL.creerEntityManager();
+        JpaUTIL.ouvrirTransaction();;
+        
         LocalDateTime today = LocalDateTime.now();
         ArrayList<Intervention> listInterv;
         listInterv = (ArrayList<Intervention>) InterventionDAO.RechercherInterventionParHorodateClient(cli.getId(), today);
+        
+        JpaUTIL.validerTransaction();
+        JpaUTIL.fermerEntityManager();
         return listInterv;
     }
     
-    public static void DemanderIntervention (Client cli, Intervention interv) {
-        //TODO intervention DAO.Persist
+    public static void demanderIntervention (Intervention interv) {
+        
+        // Permet d'ajouter l'intervention dans la base 
+        JpaUTIL.creerEntityManager();
+        JpaUTIL.ouvrirTransaction();
+        
+        // On persist et valide (pour l'instant)
+        InterventionDAO.persist(interv);
+        JpaUTIL.validerTransaction();
+        JpaUTIL.fermerEntityManager();
+    }
+    
+    public static void modifierIntervention (LatLng coord, Intervention interv){
+       
         Intervention intervention;
         JpaUTIL.creerEntityManager();
         JpaUTIL.ouvrirTransaction();
         // On récupére les infos
         intervention = update(interv);
         // On fait nos modifications
-        intervention.setIdClient(cli.getId());
-        LocalTime t1 = LocalTime.now();
         // On recherche les employes dispo (voir condition dans DAO)
-        List<Employe> listEmployeDispo = PersonneDAO.RechercherEmployeDisponible(cli.getCoords(), t1);
+        int heureIntervention = intervention.getHorodate().getHour();
+        List<Employe> listEmployeDispo = PersonneDAO.RechercherEmployeDisponible(coord, heureIntervention);
+        
         // On affecte le premier, mettre un try/catch pour gérer concurrence
         intervention.setIdEmploye(listEmployeDispo.get(0).getId());
-        // On persist et valide (pour l'instant)
+        
         InterventionDAO.persist(intervention);
         JpaUTIL.validerTransaction();
+        JpaUTIL.fermerEntityManager();
     }
     
-    public static void FinIntervention (Employe emp, String etat, String commentaireEmp, Intervention interv) {
+    public static void finIntervention (Employe emp, String etat, String commentaireEmp, Intervention interv) {
         //TODO
         Intervention intervention;
         JpaUTIL.creerEntityManager();
@@ -211,6 +264,7 @@ public class ServicePersonne {
         // On persist et valide (pour l'instant)
         InterventionDAO.persist(intervention);
         JpaUTIL.validerTransaction();
+        JpaUTIL.fermerEntityManager();
     }
     
 }

@@ -35,9 +35,10 @@ public abstract class Intervention implements Serializable {
         this.estFini = false;
     }
     
-    public Intervention(String description, LocalDateTime horodate) {
+    public Intervention(String description, Long idclient, LocalDateTime horodate) {
         this.description = description;
         this.horodate = horodate;
+        this.idClient = idclient;
         this.estFini = false;
     }
     

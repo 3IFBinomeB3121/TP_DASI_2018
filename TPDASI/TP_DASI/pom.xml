@@ -27,11 +27,6 @@
             <artifactId>google-maps-services</artifactId>
             <version>0.2.6</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>PROACTIF_db</artifactId>
-            <version>10.12.1.1</version>
-        </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -20,8 +20,8 @@ public class Animal extends Intervention{
     public Animal() {
     }
 
-    public Animal(String description, LocalDateTime horodate, String unTypeAnimal) {
-        super(description, horodate);
+    public Animal(String description, LocalDateTime horodate, Long idclient, String unTypeAnimal) {
+        super(description, idclient, horodate);
         this.typeAnimal = unTypeAnimal;
     }
 

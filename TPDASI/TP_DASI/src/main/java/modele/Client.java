@@ -22,10 +22,6 @@ public class Client extends Personne {
     public Client() {
     }
 
-    @Override
-    public String toString() {
-        return "Client{" + '}';
-    }
     
     
 }
