@@ -8,10 +8,13 @@ package modele;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
 
 /**
  *
@@ -22,39 +25,42 @@ public abstract class Intervention implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
-    private String description;
-    private LocalDateTime horodate;
-    private boolean estFini;
-    private String etat;
-    private LocalTime heureFin;
-    private String commentaireEmp;
-    private Long idClient;
-    private Long idEmploye;
+    protected String description;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    protected Date horodate;
+    protected boolean estFini;
+    protected String etat;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    protected Date heureFin;
+    protected String commentaireEmp;
+    @ManyToOne
+    protected Client client;
+    @ManyToOne
+    protected Employe employe;
 
     public Intervention() {
         this.estFini = false;
     }
     
-    public Intervention(String description, Long idclient, LocalDateTime horodate) {
+    public Intervention(String description, Date horodate) {
         this.description = description;
         this.horodate = horodate;
-        this.idClient = idclient;
         this.estFini = false;
     }
     
-    public Long getIdEmploye() {
-        return idEmploye;
+    public Employe getEmploye() {
+        return employe;
     }
 
-    public Long getIdClient() {
-        return idClient;
+    public Client getClient() {
+        return client;
     }
 
     public String getDescription() {
         return description;
     }
    
-    public LocalDateTime getHorodate() {
+    public Date getHorodate() {
         return horodate;
     }
 
@@ -62,7 +68,7 @@ public abstract class Intervention implements Serializable {
         return estFini;
     }
 
-    public LocalTime getHeureFin() {
+    public Date getHeureFin() {
         return heureFin;
     }
 
@@ -78,7 +84,7 @@ public abstract class Intervention implements Serializable {
         this.description = description;
     }
 
-    public void setHorodate(LocalDateTime horodate) {
+    public void setHorodate(Date horodate) {
         this.horodate = horodate;
     }
 
@@ -86,7 +92,7 @@ public abstract class Intervention implements Serializable {
         this.estFini = estFini;
     }
 
-    public void setHeureFin(LocalTime heureFin) {
+    public void setHeureFin(Date heureFin) {
         this.heureFin = heureFin;
     }
 
@@ -94,12 +100,12 @@ public abstract class Intervention implements Serializable {
         this.commentaireEmp = commentaireEmp;
     }
     
-    public void setIdClient(Long idClient) {
-        this.idClient = idClient;
+    public void setClient(Client unClient) {
+        this.client = unClient;
     }
 
-    public void setIdEmploye(Long idEmploye) {
-        this.idEmploye = idEmploye;
+    public void setEmploye(Employe unEmploye) {
+        this.employe = unEmploye;
     }
 
     public void setEtat(String etat) {
@@ -108,8 +114,7 @@ public abstract class Intervention implements Serializable {
 
     @Override
     public String toString() {
-        return "Intervention{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", idClient=" + idClient + ", idEmploye=" + idEmploye + '}';
+        return "Intervention{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe + '}';
     }
-    
-    
+
 }

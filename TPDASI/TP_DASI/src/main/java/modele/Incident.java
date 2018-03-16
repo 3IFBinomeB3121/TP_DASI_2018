@@ -6,6 +6,7 @@
 package modele;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import javax.persistence.Entity;
 
 /**
@@ -18,13 +19,13 @@ public class Incident extends Intervention {
     public Incident() {
     }
 
-    public Incident(String description, Long idclient, LocalDateTime horodate) {
-        super(description, idclient, horodate);
+    public Incident(String description, Date horodate) {
+        super(description, horodate);
     }
 
     @Override
     public String toString() {
-        return "Incident{" + '}';
+        return "Incident{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe + '}';
     }
     
 }

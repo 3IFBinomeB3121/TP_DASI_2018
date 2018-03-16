@@ -5,7 +5,7 @@
  */
 package modele;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import javax.persistence.Entity;
 
 /**
@@ -20,8 +20,8 @@ public class Animal extends Intervention{
     public Animal() {
     }
 
-    public Animal(String description, LocalDateTime horodate, Long idclient, String unTypeAnimal) {
-        super(description, idclient, horodate);
+    public Animal(String description, Date horodate, String unTypeAnimal) {
+        super(description, horodate);
         this.typeAnimal = unTypeAnimal;
     }
 
@@ -35,9 +35,6 @@ public class Animal extends Intervention{
 
     @Override
     public String toString() {
-        return "Animal{" + "typeAnimal=" + typeAnimal + '}';
+        return "Animal{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe + "}" + "typeAnimal=" + typeAnimal + "}";
     }
-    
-    
-    
 }

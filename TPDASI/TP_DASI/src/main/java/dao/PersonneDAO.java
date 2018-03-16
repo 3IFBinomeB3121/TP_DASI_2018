@@ -10,8 +10,10 @@ import static dao.JpaUTIL.obtenirEntityManager;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import modele.Client;
 import modele.Employe;
+import modele.Intervention;
 import modele.Personne;
 
 /**
@@ -24,8 +26,8 @@ public class PersonneDAO {
         obtenirEntityManager().persist(emp);
     }
     
-    public static void mergeEmploye (Employe emp) {
-        obtenirEntityManager().merge(emp);
+    public static Employe mergeEmploye (Employe emp) {
+        return obtenirEntityManager().merge(emp);
     }
         
     public static void persistClient(Client cli) {
@@ -48,41 +50,46 @@ public class PersonneDAO {
         // heureFinDispo et heureDebutDispo sont des LocalTime --> Voir comment on fait : int ou conversion ?
         EntityManager em = JpaUTIL.obtenirEntityManager();
         Query query = em.createQuery("select e from Employe e where"
-                + " disponibilite AND heureDebutDispo<=:heureDebInter "
-                        + "AND heureFinDispo >= :heureDebInter");
+                + " e.disponibilite = TRUE AND e.heureDebutDispo<=:heureDebInter "
+                        + "AND e.heureFinDispo>=:heureDebInter");
         query.setParameter("heureDebInter", heureInter);
         listEmploye = query.getResultList();
         return listEmploye;
     }
     
-    public static List<String> obtenirEmail(){
-        
-        EntityManager em = JpaUTIL.obtenirEntityManager();
-        Query query = em.createQuery("select c.mail from Client c");
-        List<String> listMail = query.getResultList();
-        // Retourner l'ensemble des mails des clients/employés pour voir s'il n'est pas déja inscrit
-        return listMail;
-    }
 
-    public static List<String> verifierExistenceMail(String mail){
+    public static List<Personne> verifierExistencePersonne(String mail, String mdp){
 
         EntityManager em = JpaUTIL.obtenirEntityManager();
-        Query query = em.createQuery("select c.mail from Client c where c.mail=:mailAverif");
+        Query query = em.createQuery("select c from Client c where c.mail=:mailAverif AND c.motdepasse=:mdpAverifier");
         query.setParameter("mailAverif", mail);
-        List<String> listMail = query.getResultList();
-        return listMail;
+        query.setParameter("mdpAverifier", mdp);
+        List<Personne> listPers = query.getResultList();
+        return listPers;
         
         // Retourner true si le mail correspond à un mail de la base
         // Meme methode qu'obtenir mail -> Voir avec William laquelle garder 
     }
-    
-    public static List<String> verifierCorrespondanceMdp(String mail, String leMotDePasse){
+
+    public static List<Personne> verifierDoublonEmail(String mail) {
         EntityManager em = JpaUTIL.obtenirEntityManager();
-        Query query = em.createQuery("select c.motdepasse from Client c where c.mail=:mailAverif");
+        Query query = em.createQuery("select c from Client c where c.mail=:mailAverif");
         query.setParameter("mailAverif", mail);
-        List<String> mdpAcomparer = query.getResultList();
+        List<Personne> personneListe = query.getResultList();
         
         // Retourner true si mot de passe correspond au pseudo sinon false
-        return mdpAcomparer;
+        return personneListe;
+    }
+    
+    public static List<Intervention> RechercherInterventionParIdClient(Long idClient) {
+        List<Intervention> listIntervention; 
+        EntityManager em = JpaUTIL.obtenirEntityManager();
+        Query query = em.createQuery("SELECT c FROM Client c where"
+                + " c.id=:idDuClient");
+        query.setParameter("idDuClient", idClient);
+        listIntervention = query.getResultList();
+        //TODO :
+        // Rechercher les interventions en fonction de l'id du client (pour AfficherHistorique)
+        return listIntervention ;
     }
 }

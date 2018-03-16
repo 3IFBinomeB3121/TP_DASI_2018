@@ -9,12 +9,15 @@ import com.google.maps.model.LatLng;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Temporal;
 import util.GeoTest;
 
@@ -32,12 +35,15 @@ public abstract class Personne implements Serializable {
     protected String civilite;
     protected String nom;
     protected String prenom;
-    protected LocalDate dateNaissance;
-    protected int age;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    protected Date dateNaissance;
     protected String adresse;
     protected String mail;
     protected LatLng coords;
     protected String motdepasse;
+    @OneToMany
+    @OrderBy("horodate DESC")
+    protected List<Intervention> interventions;
 
     
     
@@ -46,7 +52,7 @@ public abstract class Personne implements Serializable {
     public Personne() {
     }
 
-    public Personne( String civilite, String nom, String prenom, LocalDate dateNaissance, String adresse, String mail, String motdepasse) {
+    public Personne( String civilite, String nom, String prenom, Date dateNaissance, String adresse, String mail, String motdepasse) {
         this.civilite = civilite;
         this.nom = nom;
         this.prenom = prenom;
@@ -67,7 +73,7 @@ public abstract class Personne implements Serializable {
     public String getPrenom() {
         return prenom;
     }
-    public LocalDate getDateNaissance() {
+    public Date getDateNaissance() {
         return dateNaissance;
     }
 
@@ -98,6 +104,11 @@ public abstract class Personne implements Serializable {
     public String getMail() {
         return mail;
     }
+
+    public List<Intervention> getInterventions() {
+        return interventions;
+    }
+    
     
     //--------------------------------------------------- Setters
     public void setNom(String nom) {
@@ -106,7 +117,7 @@ public abstract class Personne implements Serializable {
     public void setPrenom(String prenom) {
         this.prenom = prenom;
     }
-    public void setDateNaissance(LocalDate dateNaissance) {
+    public void setDateNaissance(Date dateNaissance) {
         this.dateNaissance = dateNaissance;
     }
 
@@ -121,20 +132,15 @@ public abstract class Personne implements Serializable {
     public void setMail(String mail) {
         this.mail = mail;
     }
-
+    public void setInterventions(List<Intervention> interventions) {
+       this.interventions = interventions;
+    }
+    
     //--------------------------------------------------- toString
 
     @Override
     public String toString() {
-        return "Personne{" + "id=" + id + ", civilite=" + civilite + ", nom=" + nom + ", prenom=" + prenom + ", dateNaissance=" + dateNaissance +  ", adresse=" + adresse + ", coords=" + coords + ", motdepasse=" + motdepasse + '}';
+        return "Personne{" + "id=" + id + ", civilite=" + civilite + ", nom=" + nom + ", prenom=" + prenom + ", dateNaissance=" + dateNaissance + ", adresse=" + adresse + ", mail=" + mail + ", coords=" + coords + ", motdepasse=" + motdepasse + ", interventions=" + interventions + '}';
     }
-
-  
-
-
-
-    
-
-
 
 }

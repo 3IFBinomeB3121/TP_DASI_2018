@@ -7,7 +7,9 @@ package modele;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 import javax.persistence.Entity;
+import javax.persistence.Version;
 
 /**
  *
@@ -17,10 +19,12 @@ import javax.persistence.Entity;
 public class Employe extends Personne {
     
     private boolean disponibilite;
-    private LocalTime heureDebutDispo;
-    private LocalTime heureFinDispo;
+    private int heureDebutDispo;
+    private int heureFinDispo;
+    @Version
+    private int version;
 
-    public Employe(boolean disponibilite, LocalTime heureDebutDispo, LocalTime heureFinDispo, String civilite, String nom, String prenom, LocalDate dateNaissance,String adresse, String mail, String motdepasse) {
+    public Employe(boolean disponibilite, int heureDebutDispo, int heureFinDispo, String civilite, String nom, String prenom, Date dateNaissance,String adresse, String mail, String motdepasse) {
         super(civilite, nom, prenom, dateNaissance, adresse, mail, motdepasse);
         this.disponibilite = disponibilite;
         this.heureDebutDispo = heureDebutDispo;
@@ -38,26 +42,26 @@ public class Employe extends Personne {
         this.disponibilite = disponibilite;
     }
 
-    public LocalTime getHeureDebutDispo() {
+    public int getHeureDebutDispo() {
         return heureDebutDispo;
     }
 
-    public void setHeureDebutDispo(LocalTime heureDebutDispo) {
+    public void setHeureDebutDispo(int heureDebutDispo) {
         this.heureDebutDispo = heureDebutDispo;
     }
 
-    public LocalTime getHeureFinDispo() {
+    public int getHeureFinDispo() {
         return heureFinDispo;
     }
 
-    public void setHeureFinDispo(LocalTime heureFinDispo) {
+    public void setHeureFinDispo(int heureFinDispo) {
         this.heureFinDispo = heureFinDispo;
     }
-    
-    
+
     @Override
     public String toString() {
-        return "Employe{" + "disponibilite=" + disponibilite + ", heureDebutDispo=" + heureDebutDispo + ", heureFinDispo=" + heureFinDispo + '}';
+        return "Employe{ id= " + id + "  civilite=" + civilite + ", nom=" + nom + ", prenom=" + prenom + ", dateNaissance=" + dateNaissance + ", adresse=" + adresse + ", mail=" + mail + ", coords=" + coords + ", motdepasse=" + motdepasse + ", interventions=" + interventions + "disponibilite=" + disponibilite + ", heureDebutDispo=" + heureDebutDispo + ", heureFinDispo=" + heureFinDispo + ", version=" + version + '}';
     }
+    
     
 }

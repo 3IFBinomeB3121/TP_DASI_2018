@@ -5,7 +5,7 @@
  */
 package modele;
 
-import java.time.LocalDate;
+import java.util.Date;
 import javax.persistence.Entity;
 
 /**
@@ -15,13 +15,17 @@ import javax.persistence.Entity;
 @Entity
 public class Client extends Personne {
 
-    public Client( String civilite, String nom, String prenom, LocalDate dateNaissance, String adresse, String mail, String motdepasse) {
+    public Client(String civilite, String nom, String prenom, Date dateNaissance, String adresse, String mail, String motdepasse) {
         super(civilite, nom, prenom, dateNaissance, adresse, mail, motdepasse);
     }
 
     public Client() {
     }
 
-    
+    @Override
+    public String toString() {
+        return "Client{id=" + id + ", civilite=" + civilite + ", nom=" + nom + ", prenom=" + prenom + ", dateNaissance=" + dateNaissance + ", adresse=" + adresse + ", mail=" + mail + ", coords=" + coords + ", motdepasse=" + motdepasse + ", interventions=" + interventions +"}";
+    }
+
     
 }

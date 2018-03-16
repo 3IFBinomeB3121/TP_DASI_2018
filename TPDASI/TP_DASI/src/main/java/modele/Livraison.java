@@ -5,7 +5,7 @@
  */
 package modele;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import javax.persistence.Entity;
 
 /**
@@ -21,8 +21,8 @@ public class Livraison extends Intervention{
     public Livraison() {
     }
 
-    public Livraison(String objet, String entreprise, String description, Long idclient, LocalDateTime horodate) {
-        super(description, idclient, horodate);
+    public Livraison(String objet, String entreprise, String description, Date horodate) {
+        super(description, horodate);
         this.objet = objet;
         this.entreprise = entreprise;
     }
@@ -45,7 +45,7 @@ public class Livraison extends Intervention{
 
     @Override
     public String toString() {
-        return "Livraison{" + "objet=" + objet + ", entreprise=" + entreprise + '}';
+        return "Livraison{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe + "objet=" + objet + ", entreprise=" + entreprise + '}';
     }
     
     
