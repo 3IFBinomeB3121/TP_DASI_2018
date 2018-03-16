@@ -18,7 +18,7 @@ import modele.Employe;
 import modele.Incident;
 import modele.Intervention;
 import modele.Livraison;
-import service.ServicePersonne;
+import service.Service;
 
 /**
  *
@@ -50,13 +50,13 @@ public class Main {
         Client cli2 = new Client("Madame", "Carlita", "Josette", d1, "20 avenue albert einstein", "carlita.Josette@hotmail.fr", "carli");
         Client cli3 = new Client("Mademoiselle", "iverson", "sophie", d1, "4, rue de la pastorale d'issy", "soph.ivers@hotmail.fr", "iverson");
         try {
-            ServicePersonne.ajouterEmploye();
+            Service.ajouterEmploye();
         } catch (ParseException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
-        ServicePersonne.inscrireClient(cli);
-        ServicePersonne.inscrireClient(cli2);
-        ServicePersonne.inscrireClient(cli3);
+        Service.inscrireClient(cli);
+        Service.inscrireClient(cli2);
+        Service.inscrireClient(cli3);
         System.out.println(cli.toString() + "\r\n");
         System.out.println(cli2.toString() + "\r\n");
         System.out.println(cli3.toString() + "\r\n");
@@ -76,9 +76,9 @@ public class Main {
         System.out.println(inter.toString() + "\r\n");
         System.out.println(inter2.toString() + "\r\n");
         System.out.println(inter3.toString() + "\r\n");
-        System.out.println(ServicePersonne.demanderIntervention(cli, inter).toString()+ "\r\n");
-        System.out.println(ServicePersonne.demanderIntervention(cli,inter2).toString()+ "\r\n");
-        System.out.println(ServicePersonne.demanderIntervention(cli,inter3).toString()+ "\r\n");
+        System.out.println(Service.demanderIntervention(cli, inter).toString()+ "\r\n");
+        System.out.println(Service.demanderIntervention(cli,inter2).toString()+ "\r\n");
+        System.out.println(Service.demanderIntervention(cli,inter3).toString()+ "\r\n");
         
         
         
@@ -94,11 +94,17 @@ public class Main {
         }*/
         
         // Test de la méthode AfficheHistorique
-        List<Intervention> historiqueClient = ServicePersonne.consulterHistorique(cli);
-        if (!historiqueClient.isEmpty()){
+        List<Client> clientInfo = Service.consulterHistorique(cli);
+        System.out.println(clientInfo.toString());
+        if (!clientInfo.isEmpty()){
+            List<Intervention> historiqueClient = clientInfo.get(0).getInterventions();
             for (Intervention intervention: historiqueClient){
+                System.out.println("testDebug1");
                 System.out.println(intervention.toString() + "\r\n");
             }
+        }
+        else{
+            System.out.println("Vous n'avez jamais fait de demande d'intervention");
         }
         
         JpaUTIL.destroy();

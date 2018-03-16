@@ -7,10 +7,10 @@ package dao;
 
 import com.google.maps.model.LatLng;
 import static dao.JpaUTIL.obtenirEntityManager;
+import java.util.Calendar;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import modele.Client;
 import modele.Employe;
 import modele.Intervention;
@@ -34,8 +34,8 @@ public class PersonneDAO {
         obtenirEntityManager().persist(cli);
     }
     
-    public static void mergeClient (Client cli) {
-        obtenirEntityManager().merge(cli);
+    public static Client mergeClient (Client cli) {
+        return obtenirEntityManager().merge(cli);
     }
     
     public static Personne findPersonneByIndex (Long index) {
@@ -81,15 +81,16 @@ public class PersonneDAO {
         return personneListe;
     }
     
-    public static List<Intervention> RechercherInterventionParIdClient(Long idClient) {
-        List<Intervention> listIntervention; 
+    public static List<Client> RechercherInterventionParIdClient(Long idClient) {
+        List<Client> listInterventionClient; 
         EntityManager em = JpaUTIL.obtenirEntityManager();
         Query query = em.createQuery("SELECT c FROM Client c where"
                 + " c.id=:idDuClient");
         query.setParameter("idDuClient", idClient);
-        listIntervention = query.getResultList();
+        listInterventionClient = query.getResultList();
         //TODO :
         // Rechercher les interventions en fonction de l'id du client (pour AfficherHistorique)
-        return listIntervention ;
+        return listInterventionClient ;
     }
+
 }

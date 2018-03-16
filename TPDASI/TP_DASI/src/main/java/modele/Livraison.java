@@ -45,7 +45,7 @@ public class Livraison extends Intervention{
 
     @Override
     public String toString() {
-        return "Livraison{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe + "objet=" + objet + ", entreprise=" + entreprise + '}';
+        return "Livraison{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe + ", objet=" + objet + ", entreprise=" + entreprise + '}';
     }
     
     

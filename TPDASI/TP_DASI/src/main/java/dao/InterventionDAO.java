@@ -9,13 +9,12 @@ package dao;
 //dans le contexte de dépendance pour qu'ils puissent persister
 
 import static dao.JpaUTIL.obtenirEntityManager;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import modele.Animal;
+import modele.Employe;
 import modele.Incident;
 import modele.Intervention;
 import modele.Livraison;
@@ -65,41 +64,30 @@ public class InterventionDAO {
     
     
     
-    public static List<Intervention> RechercherInterventionParEmploye(Long idEmploye) {
+    public static List<Intervention> RechercherInterventionParEmploye(Employe emp) {
         List<Intervention> listIntervention; 
         EntityManager em = JpaUTIL.obtenirEntityManager();
         Query query = em.createQuery("SELECT i FROM Intervention i where"
-                + " i.idEmploye =:idDeEmploye");
-        query.setParameter("idDeEmploye", idEmploye);
+                + " i.employe =:emp");
+        query.setParameter("emp", emp);
         listIntervention = query.getResultList();
         //TODO :
         // Rechercher les interventions en fonction de l'id du client (pour AfficherHistorique)
         return listIntervention ;
     }
     
-    public static List<Intervention> RechercherInterventionParHorodateClient(Long idClient, Date horodate) {
-        //TODO :
-        // Rechercher les interventions en fonction de l'id du client (pour AfficherHistorique)
-        //et de la date demandée
-        List<Intervention> listIntervention; 
-        EntityManager em = JpaUTIL.obtenirEntityManager();
-        Query query = em.createQuery("SELECT i FROM Intervention i WHERE i.idClient=:idDuClient AND i.horodate =:horo");
-        query.setParameter("horo", horodate);
-        query.setParameter("idDuClient", idClient);
-        listIntervention = query.getResultList();
-        return listIntervention;
-    }
     
-    public static List<Intervention> RechercherInterventionParHorodateEmploye(Long idEmploye, Date horodate) {
+    public static List<Intervention> RechercherInterventionParHorodateEmploye(Employe emp, Calendar today, Calendar tomorrow) {
         //TODO :
         // Rechercher les interventions en fonction de l'id de l'employe (pour AfficherOpeDuJour)
         // et de la date demandée
         List<Intervention> listIntervention; 
         EntityManager em = JpaUTIL.obtenirEntityManager();
         Query query = em.createQuery("SELECT i FROM Intervention i WHERE"
-                + " i.horodate =:horo AND  i.idClient = :idDeEmp"); 
-        query.setParameter("horo", horodate);
-        query.setParameter("idDeEmp", idEmploye);
+                + " i.horodate >=:aujourdhui AND i.horodate<=:demain AND i.employe = :emp"); 
+        query.setParameter("aujourdhui", today.getTime());
+        query.setParameter("aujourdhui", tomorrow.getTime());
+        query.setParameter("idDeEmp", emp.getId());
         listIntervention = query.getResultList();
         return listIntervention;
     }

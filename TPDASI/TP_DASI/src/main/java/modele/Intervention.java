@@ -6,8 +6,6 @@
 package modele;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

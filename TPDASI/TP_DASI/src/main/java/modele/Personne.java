@@ -8,6 +8,7 @@ package modele;
 import com.google.maps.model.LatLng;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
@@ -59,6 +60,7 @@ public abstract class Personne implements Serializable {
         this.dateNaissance = dateNaissance;
         this.adresse = adresse;
         this.mail = mail;
+        this.interventions = new ArrayList<Intervention>();
         this.motdepasse = motdepasse;
     }
 
