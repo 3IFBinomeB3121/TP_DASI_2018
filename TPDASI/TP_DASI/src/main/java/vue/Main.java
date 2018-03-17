@@ -73,16 +73,18 @@ public class Main {
         Incident inter = new Incident("Fuite d'eau dans le sous-sol");
         Animal inter2 = new Animal("Sortir le chien 15 minutes", "chien");
         Livraison inter3 = new Livraison("vase", "Amazon", "Livraison colis fragile");
-        System.out.println(inter.toString() + "\r\n");
-        System.out.println(inter2.toString() + "\r\n");
-        System.out.println(inter3.toString() + "\r\n");
-        System.out.println(Service.demanderIntervention(cli, inter).toString()+ "\r\n");
-        System.out.println(Service.demanderIntervention(cli,inter2).toString()+ "\r\n");
-        System.out.println(Service.demanderIntervention(cli,inter3).toString()+ "\r\n");
         
-        System.out.println(Service.finIntervention(inter, "Problème", "Fuite trop importante, obliger d'appeler des professionnels.").toString());
-        System.out.println(Service.finIntervention(inter2, "Terminée", "").toString());
-        System.out.println(Service.finIntervention(inter3, "Terminée", "Colis réceptionné et déposé chez la voisine d'en face").toString());
+        Intervention intervention1 = Service.demanderIntervention(cli, inter);
+        Intervention intervention2 = Service.demanderIntervention(cli, inter);
+        Intervention intervention3 = Service.demanderIntervention(cli, inter);
+        
+        System.out.println(intervention1.toString()+ "\r\n");
+        System.out.println(intervention2.toString()+ "\r\n");
+        System.out.println(intervention3.toString()+ "\r\n");
+        
+        System.out.println(Service.finIntervention(intervention1, "Problème", "Fuite trop importante, obliger d'appeler des professionnels.").toString() + "\r\n");
+        System.out.println(Service.finIntervention(intervention2, "Terminée", "").toString() + "\r\n");
+        System.out.println(Service.finIntervention(intervention3, "Terminée", "Colis réceptionné et déposé chez la voisine d'en face").toString() + "\r\n");
         
         
         // Test de la méthode AfficheOpeDuJour
@@ -101,11 +103,11 @@ public class Main {
         List<Client> clientInfo = Service.consulterHistorique(cli);
         System.out.println(clientInfo.toString());
         if (!clientInfo.isEmpty()){
-            List<Intervention> historiqueClient = clientInfo.get(0).getInterventions();
+            /*List<Intervention> historiqueClient = clientInfo.get(0).getInterventions();
             for (Intervention intervention: historiqueClient){
                 System.out.println("testDebug1");
                 System.out.println(intervention.toString() + "\r\n");
-            }
+            }*/
         }
         else{
             System.out.println("Vous n'avez jamais fait de demande d'intervention");

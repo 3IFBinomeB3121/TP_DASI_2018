@@ -11,7 +11,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Temporal;
 
 /**
@@ -19,6 +23,7 @@ import javax.persistence.Temporal;
  * @author William
  */
 @Entity
+@Inheritance (strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Intervention implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,9 +36,13 @@ public abstract class Intervention implements Serializable {
     @Temporal(javax.persistence.TemporalType.DATE)
     protected Date heureFin;
     protected String commentaireEmp;
-    @ManyToOne
+    @ManyToOne(targetEntity=Client.class)
+    //@PrimaryKeyJoinColumn
+    //@JoinColumn(name = "client", insertable=false, updatable=false)
     protected Client client;
-    @ManyToOne
+    @ManyToOne(targetEntity=Employe.class)
+    //@PrimaryKeyJoinColumn
+    //@JoinColumn(name = "employe", insertable=false, updatable=false)
     protected Employe employe;
     Double distance;
 
@@ -121,6 +130,10 @@ public abstract class Intervention implements Serializable {
     @Override
     public String toString() {
         return "Intervention{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe + ", distance=" + distance + '}';
+    }
+
+    public boolean getId() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

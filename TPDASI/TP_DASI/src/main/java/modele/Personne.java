@@ -7,7 +7,6 @@ package modele;
 
 import com.google.maps.model.LatLng;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +25,7 @@ import util.GeoTest;
  *
  * @author William
  */
-@Inheritance (strategy = InheritanceType.JOINED)
+@Inheritance (strategy = InheritanceType.TABLE_PER_CLASS)
 @Entity
 public abstract class Personne implements Serializable {
     //------------------------------------------------ Parameters
@@ -43,9 +42,9 @@ public abstract class Personne implements Serializable {
     protected String numTel;
     protected LatLng coords;
     protected String motdepasse;
-    @OneToMany
+    /*@OneToMany
     @OrderBy("horodate DESC")
-    protected List<Intervention> interventions;
+    protected List<Intervention> interventions;*/
 
     
     
@@ -62,7 +61,7 @@ public abstract class Personne implements Serializable {
         this.adresse = adresse;
         this.mail = mail;
         this.numTel = numerotel;
-        this.interventions = new ArrayList<>();
+        //this.interventions = new ArrayList<>();
         this.motdepasse = motdepasse;
     }
 
@@ -114,9 +113,9 @@ public abstract class Personne implements Serializable {
     }
     
 
-    public List<Intervention> getInterventions() {
+   /* public List<Intervention> getInterventions() {
         return interventions;
-    }
+    }*/
     
     
     //--------------------------------------------------- Setters
@@ -146,7 +145,7 @@ public abstract class Personne implements Serializable {
         this.numTel = numTel;
     }
     
-    public void setInterventions(List<Intervention> interventions) {
+   /* public void setInterventions(List<Intervention> interventions) {
        this.interventions = interventions;
     }
     
@@ -159,13 +158,13 @@ public abstract class Personne implements Serializable {
         {
             intervention.setEmploye((Employe) this);
         }
-    }
+    }*/
     
     //--------------------------------------------------- toString
 
     @Override
     public String toString() {
-        return "Personne{" + "id=" + id + ", civilite=" + civilite + ", nom=" + nom + ", prenom=" + prenom + ", dateNaissance=" + dateNaissance + ", adresse=" + adresse + ", mail=" + mail + ", coords=" + coords + ", motdepasse=" + motdepasse + ", interventions=" + interventions + '}';
+        return "Personne{" + "id=" + id + ", civilite=" + civilite + ", nom=" + nom + ", prenom=" + prenom + ", dateNaissance=" + dateNaissance + ", adresse=" + adresse + ", mail=" + mail + ", coords=" + coords + ", motdepasse=" + motdepasse + ", interventions=" + /*interventions +*/ '}';
     }
 
 }

@@ -8,12 +8,10 @@ package service;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.TravelMode;
 import dao.InterventionDAO;
-import static dao.InterventionDAO.update;
 import dao.JpaUTIL;
 import dao.PersonneDAO;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -188,12 +186,9 @@ public class Service {
         // On recherche les employes dispo (voir condition dans DAO)
         Date heureIntervention = new Date();
         
-        /*Calendar calendar = Calendar.getInstance();
-        calendar.setTime(heureIntervention);*/
-        
         // Gérer la distance et aussi trier par employe les plus proches !
         // attention ... stepvpar par défaut que je m'en fou mais pour google maps teste la possibilité de gérer les escales
-        List<Employe> listEmployeDispo = PersonneDAO.RechercherEmployeDisponible(cli.getCoords(), 18);
+        List<Employe> listEmployeDispo = PersonneDAO.RechercherEmployeDisponible(cli.getCoords(), heureIntervention.getHours());
         Double duration = 100000000000.0;
         int indiceEmpLePlusProche=0;
         
@@ -217,7 +212,7 @@ public class Service {
                 emp.setDisponibilite(false);
                 intervention.setClient(cli);
                 intervention.setEmploye(emp);
-                intervention.setDistance(laDistance/1000.0);
+                intervention.setDistance(laDistance);
                 intervention.setHorodate(heureIntervention);
                 /*Client client = PersonneDAO.mergeClient(cli);
                 client.addInterventions(intervention);*/
@@ -233,7 +228,7 @@ public class Service {
                     // Rafrachir la liste des employes au cas ou d'autres se serait rendu dispo
                     success = false;
                     JpaUTIL.annulerTransaction();
-                    listEmployeDispo = PersonneDAO.RechercherEmployeDisponible(cli.getCoords(), 18);
+                    listEmployeDispo = PersonneDAO.RechercherEmployeDisponible(cli.getCoords(), heureIntervention.getHours());
                 }
             }
         }
@@ -242,7 +237,6 @@ public class Service {
             return null;
         }
         else{
-            
             AvertirEmploye(intervention);
             JpaUTIL.fermerEntityManager();
             return intervention;
@@ -275,9 +269,6 @@ public class Service {
         JpaUTIL.ouvrirTransaction();
         // On récupére les infos
         Intervention intervention = InterventionDAO.update(interv);
-        System.out.println("Ok");
-        System.out.println(intervention.getEmploye());
-        System.out.println(interv.getEmploye());
         Employe employe = PersonneDAO.mergeEmploye(intervention.getEmploye());
         
         Date finInter = new Date();
