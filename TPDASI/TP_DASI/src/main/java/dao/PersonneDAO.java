@@ -42,7 +42,7 @@ public class PersonneDAO {
         return obtenirEntityManager().find(Personne.class, index);
     }
     
-    public static List<Employe> rechercherEmployeDisponible(LatLng coord, int heureInter) {
+    public static List<Employe> rechercherEmployeDisponible(int heureInter) {
         List<Employe> listEmploye; 
         //TODO :
         // Rechercher un employé en fction de sa disponibilité et comparer avec les coordonnées
@@ -91,6 +91,14 @@ public class PersonneDAO {
         //TODO :
         // Rechercher les interventions en fonction de l'id du client (pour AfficherHistorique)
         return listInterventionClient ;
+    }
+
+    public static List<Client> recupererTousLesClients() {
+        List<Client> lesClients; 
+        EntityManager em = JpaUTIL.obtenirEntityManager();
+        Query query = em.createQuery("SELECT c FROM Client c");
+        lesClients = query.getResultList();
+        return lesClients ;
     }
 
 }

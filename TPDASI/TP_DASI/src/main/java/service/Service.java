@@ -12,7 +12,10 @@ import dao.JpaUTIL;
 import dao.PersonneDAO;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.RollbackException;
@@ -51,33 +54,42 @@ public class Service {
         int t4 = 23;
         int t5 = 20;
         
+        Employe emp = new Employe(true,0,24,"mme","karda","helene",d1,"20 Rue Decomberousse, Villeurbanne", "0630276677", "helene.karda@outlook.fr", "dasi_18");
         Employe emp2 = new Employe(true,0,24,"mme","eti","julie",d1,"61 Avenue Roger Salengro, Villeurbanne", "0630276677", "julie.eti@hotmail.fr", "pdp");
         Employe emp3 = new Employe(true,0,24,"mme","occ","marine",d2,"37 Avenue Jean Capelle Est, Villeurbanne","ocmarine999@hotmail.fr","0630276677","01239485");
         Employe emp4 = new Employe(true,0,24,"m","barg","pauline",d3,"7 Avenue Jean Capelle Ouest, Villeurbanne","pauline.barg@gmail.com","0630276677","0aedi55");
         Employe emp5 = new Employe(true,0,24,"m","bell","gerard",d4,"20 Avenue Albert Eisntein, Villeurbanne", "gegedu90@gmail.com","0630276677","coucouhesa");
+        Employe emp6 = new Employe(true,0,24,"m","tucker","chris",d4,"7 Rue de la Cloche, Villeurbanne", "marty.rvf@sfr.fr","0630276677","cPROBA_cool");
         
-        emp2.setCoords(calculerCoords(emp2.getAdresse()));
-        emp3.setCoords(calculerCoords(emp3.getAdresse()));
-        emp4.setCoords(calculerCoords(emp4.getAdresse()));
-        emp5.setCoords(calculerCoords(emp5.getAdresse()));
-        
-        System.out.println(emp2);
-        System.out.println(emp3);
-        System.out.println(emp4);
-        System.out.println(emp5);
         
         //On vérifie si l'entity manager est ouvert
         JpaUTIL.creerEntityManager();
         //On commence une transaction
         JpaUTIL.ouvrirTransaction();
+        
+        emp.setCoords(calculerCoords(emp.getAdresse()));
+        emp2.setCoords(calculerCoords(emp2.getAdresse()));
+        emp3.setCoords(calculerCoords(emp3.getAdresse()));
+        emp4.setCoords(calculerCoords(emp4.getAdresse()));
+        emp5.setCoords(calculerCoords(emp5.getAdresse()));
+        emp6.setCoords(calculerCoords(emp6.getAdresse()));
         //On rend l'objet persistant
+        PersonneDAO.persistEmploye(emp);
         PersonneDAO.persistEmploye(emp2);
         PersonneDAO.persistEmploye(emp3);
         PersonneDAO.persistEmploye(emp4);
         PersonneDAO.persistEmploye(emp5);
+        PersonneDAO.persistEmploye(emp6);
         //On commit la transaction
         JpaUTIL.validerTransaction();
         JpaUTIL.fermerEntityManager();
+        
+        System.out.println(emp);
+        System.out.println(emp2);
+        System.out.println(emp3);
+        System.out.println(emp4);
+        System.out.println(emp5);
+        System.out.println(emp6);
     }
     
     public static void inscrireClient(Client cli) {
@@ -95,19 +107,21 @@ public class Service {
         //On rend l'objet persistant
         PersonneDAO.persistClient(cli);
         //On commit la transaction
-        JpaUTIL.validerTransaction();
+        
         
         if (mailValide){
             System.out.println("Bonjour " + cli.getPrenom() + ",\r\n"
                     + "Nous vous confirmons votre inscription"
                     + " au service PROACT'IF. Votre numéro de client"
                     + " est : " + cli.getId());
+            JpaUTIL.validerTransaction();
         }
         else {
             System.out.println("Bonjour " + cli.getPrenom() + ",\r\n"
                     + "Votre inscription au service PROACT'IF a "
                     + "malencontreusement échoué... Merci de recommencer"
                     + " ultérieurement.");
+            JpaUTIL.annulerTransaction();
         }
         JpaUTIL.fermerEntityManager();
     }
@@ -125,12 +139,7 @@ public class Service {
        // Coder la fonction JPQL dans Personne DAO
         
         List<Personne> listePers = PersonneDAO.verifierDoublonEmail(mail);
-        if (listePers.isEmpty()){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return listePers.isEmpty();
     }
     
     /*public static void afficherPersonnesPersistantes(){
@@ -163,16 +172,24 @@ public class Service {
         }
     }
     
-    public static List<Client> chargerHistorique(Client cli) {
+    public static List<Intervention> chargerHistorique(Client cli) {
         //TODO
         //On vérifie si l'entity manager est ouvert
         JpaUTIL.creerEntityManager();
         
-        List<Client> listIntervClient;
-        listIntervClient = PersonneDAO.rechercherInterventionParIdClient(cli.getId());
+        List<Intervention> listIntervDuClient;
+        listIntervDuClient = InterventionDAO.rechercherInterventionDuClient(cli);
+        Collections.sort(listIntervDuClient, new Comparator<Intervention>() {
+ 
+            @Override
+            public int compare(Intervention i1, Intervention i2) {
+                return i1.getHorodate().compareTo(i2.getHorodate());
+            }
+            
+        });
         
         JpaUTIL.fermerEntityManager();
-        return listIntervClient;
+        return listIntervDuClient;
     }
     
     public static Intervention demanderIntervention (Client cli, Intervention interv) {
@@ -188,7 +205,14 @@ public class Service {
         
         // Gérer la distance et aussi trier par employe les plus proches !
         // attention ... stepvpar par défaut que je m'en fou mais pour google maps teste la possibilité de gérer les escales
-        List<Employe> listEmployeDispo = PersonneDAO.rechercherEmployeDisponible(cli.getCoords(), heureIntervention.getHours());
+        System.out.println(heureIntervention.getHours());
+        List<Employe> listEmployeDispo = new ArrayList<>();
+        try {
+            listEmployeDispo = PersonneDAO.rechercherEmployeDisponible(heureIntervention.getHours());
+        }
+        catch (Exception e){
+            System.out.println("Aucun employe dispo");
+        }
         Double duration = 100000000000.0;
         int indiceEmpLePlusProche=0;
         
@@ -228,7 +252,7 @@ public class Service {
                     // Rafrachir la liste des employes au cas ou d'autres se serait rendu dispo
                     success = false;
                     JpaUTIL.annulerTransaction();
-                    listEmployeDispo = PersonneDAO.rechercherEmployeDisponible(cli.getCoords(), heureIntervention.getHours());
+                    listEmployeDispo = PersonneDAO.rechercherEmployeDisponible(heureIntervention.getHours());
                 }
             }
         }
@@ -300,9 +324,8 @@ public class Service {
         }
     }
     
-    public static List<Intervention> afficherOpeDuJour (Employe emp) {
-        //TODO
-        //On vérifie si l'entity manager est ouvert
+    public static List<Intervention> consulterOpeDuJour (Employe emp) {
+        
         JpaUTIL.creerEntityManager();
         
         Calendar today = Calendar.getInstance();
@@ -314,7 +337,7 @@ public class Service {
         Calendar tomorrow = (Calendar) today.clone();
         tomorrow.add(Calendar.DAY_OF_YEAR,1);
         
-        List<Intervention> listInterv; // Verifier s'il ne faut pas faire un new
+        List<Intervention> listInterv; 
         listInterv = InterventionDAO.rechercherInterventionParHorodateEmploye(emp, today, tomorrow);
         
         JpaUTIL.fermerEntityManager();
@@ -350,8 +373,11 @@ public class Service {
         return listInterv;
     }
     */
-    
-    
-    
-    
+
+    public static List<Client> recupererInfosClients() {
+        JpaUTIL.creerEntityManager();
+        List<Client> lesClients = PersonneDAO.recupererTousLesClients();
+        JpaUTIL.fermerEntityManager();
+        return lesClients;
+    }
 }

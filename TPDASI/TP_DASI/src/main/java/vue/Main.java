@@ -56,26 +56,27 @@ public class Main {
         } catch (ParseException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         Service.inscrireClient(cli);
         Service.inscrireClient(cli2);
         Service.inscrireClient(cli3);
-        System.out.println(cli.toString() + "\r\n");
-        System.out.println(cli2.toString() + "\r\n");
-        System.out.println(cli3.toString() + "\r\n");
+        
+        List<Client> clientsInfos = Service.recupererInfosClients();
+        System.out.println(clientsInfos.get(0).toString() + "\r\n");
+        System.out.println(clientsInfos.get(1).toString() + "\r\n");
+        System.out.println(clientsInfos.get(2).toString() + "\r\n");
         
         Saisie.pause();
         
         // Test de seConnecter (client et employe)
         
-        JpaUTIL.creerEntityManager();
-        Client unClient = PersonneDAO.mergeClient(cli);
-        Personne persConnexionSuccess = Service.seConnecter(unClient.getMail(), unClient.getMotdepasse());
-        System.out.println(persConnexionSuccess);
+        
+        Personne persConnexionSuccess = Service.seConnecter(clientsInfos.get(0).getMail(), clientsInfos.get(0).getMotdepasse());
+        System.out.println(persConnexionSuccess.toString());
         Personne persConnexionFail = Service.seConnecter("mail_non_existant@hotmail.fr", "motdepasse");
         if (persConnexionFail == null){
             System.out.println("Le mail ou mot de passe rentré n'est pas valide.");
         }
-        JpaUTIL.fermerEntityManager();
         
         Saisie.pause();
         
@@ -84,35 +85,35 @@ public class Main {
         String comments = "";
         boolean typeCorrect = false;
         boolean plusieursInterventions = false;
-        Integer nbInter = Saisie.lireInteger("Combien de demandes d'interventions souhaitez-vous faire (pour test) : 0 (non) ou 1 (oui)");
+        Integer nbInter = Saisie.lireInteger("Combien de demandes d'interventions souhaitez-vous faire (pour test)");
         Intervention interventionDemandee;
-        for (int i = 0; i< nbInter.intValue(); i++){
+        for (int i = 0; i< nbInter; i++){
             while (!typeCorrect){
-                Integer type = Saisie.lireInteger("Quel type d'intervention souhaitez-vous demander ?\r\n1 - Incident\r\n2 - Animal\r\n - Livraison");
+                Integer type = Saisie.lireInteger("Quel type d'intervention souhaitez-vous demander ?\r\n1 - Incident\r\n2 - Animal\r\n3 - Livraison\r\n");
                 switch (type){
                     case 1:
                         comments = Saisie.lireChaine("Des commentaires sur l'intervention ?");
                         Incident inter = new Incident(comments);
-                        typeCorrect = true;
-                        interventionDemandee = Service.demanderIntervention(cli, inter);
+                        interventionDemandee = Service.demanderIntervention(clientsInfos.get(0), inter);
                         System.out.println(interventionDemandee.toString() + "\r\n");
+                        typeCorrect = true;
                         break;
                     case 2:
                         String typeAnimal = Saisie.lireChaine("Quel type d'animal concerne l'intervention?");
                         comments = Saisie.lireChaine("Commentaires sur l'intervention ?");
                         Animal inter2 = new Animal(comments, typeAnimal);
-                        typeCorrect = true;
-                        interventionDemandee = Service.demanderIntervention(cli, inter2);
+                        interventionDemandee = Service.demanderIntervention(clientsInfos.get(0), inter2);
                         System.out.println(interventionDemandee.toString() + "\r\n");
+                        typeCorrect = true;
                         break;
                     case 3:
                         String objet = Saisie.lireChaine("Quel objet allez-vous vous faire livrer ?");
                         String entreprise = Saisie.lireChaine("Par quel entreprise de livraison?");
                         comments = Saisie.lireChaine("Commentaires sur l'intervention ?");
                         Livraison inter3 = new Livraison(objet, entreprise, comments);
-                        typeCorrect = true;
-                        interventionDemandee = Service.demanderIntervention(cli, inter3);
+                        interventionDemandee = Service.demanderIntervention(clientsInfos.get(0), inter3);
                         System.out.println(interventionDemandee.toString() + "\r\n");
+                        typeCorrect = true;
                         break;
                     default:
                         System.out.println("Chiffre rentré non conforme, veuillez le renseignez à nouveau");
@@ -120,11 +121,57 @@ public class Main {
             }
         }
         
+        Saisie.pause();
+        
+        // Test de confirmerFinIntervention
+        
+        Incident inter = new Incident("Fuite d'eau dans le sous-sol");
+        Animal inter2 = new Animal("Sortir le chien 15 minutes", "chien");
+        Livraison inter3 = new Livraison("vase", "Amazon", "Livraison colis fragile");
+        
+        Intervention intervention1 = Service.demanderIntervention(cli, inter);
+        Intervention intervention2 = Service.demanderIntervention(cli, inter2);
+        Intervention intervention3 = Service.demanderIntervention(cli, inter3);
+        
+        Intervention intervention1fini = Service.confirmerFinIntervention(intervention1, "Problème", "Fuite trop importante, obliger d'appeler des professionnels.");
+        Intervention intervention2fini = Service.confirmerFinIntervention(intervention2, "Terminée", "");
+        Intervention intervention3fini = Service.confirmerFinIntervention(intervention3, "Terminée", "Colis réceptionné et déposé chez la voisine d'en face");
+        
+        System.out.println(intervention1fini.toString() + "\r\n");
+        System.out.println(intervention2.toString() + "\r\n");
+        System.out.println(intervention3fini.toString() + "\r\n");
+        
+        Saisie.pause();
+        
         // Test de chargerHistorique
         
+        List<Intervention> historiqueClient = Service.chargerHistorique(cli);
+        int numeroInter = 1;
+        if (!historiqueClient.isEmpty()){
+            for (Intervention intervention: historiqueClient){
+                System.out.println("Intervention numéro " + numeroInter + " :\r\n");
+                System.out.println(intervention.toString() + "\r\n");
+                numeroInter++;
+            }
+        }
+        else{
+            System.out.println("Vous n'avez jamais fait de demande d'intervention");
+        }
+        
+        Saisie.pause();
+        
         // Test de consulterOpeDuJour
-        // Test de demanderIntervention
-        // Test de confirmerFinIntervention
+        
+        System.out.println("Operation du jour de l'employe :\r\n " + historiqueClient.get(0).getEmploye());
+        List<Intervention> interEmpToday = Service.consulterOpeDuJour(historiqueClient.get(0).getEmploye());
+        numeroInter = 1;
+        for (Intervention intervention : interEmpToday){
+            System.out.println("Intervention numéro " + numeroInter + " :\r\n");
+            System.out.println(intervention.toString() + "\r\n");
+            numeroInter++;
+        }
+        
+        Saisie.pause();
         
         // Scénario: je m'inscris, l'historique se charge, je demande une intervention
         // Un employé est affecté. Il déclare la fin de l'intervention. L'historique
@@ -148,21 +195,11 @@ public class Main {
         //      - 
         
         // On ajoute des interventions
-        Incident inter = new Incident("Fuite d'eau dans le sous-sol");
-        Animal inter2 = new Animal("Sortir le chien 15 minutes", "chien");
-        Livraison inter3 = new Livraison("vase", "Amazon", "Livraison colis fragile");
         
-        Intervention intervention1 = Service.demanderIntervention(cli, inter);
-        Intervention intervention2 = Service.demanderIntervention(cli, inter);
-        Intervention intervention3 = Service.demanderIntervention(cli, inter);
         
-        System.out.println(intervention1.toString()+ "\r\n");
-        System.out.println(intervention2.toString()+ "\r\n");
-        System.out.println(intervention3.toString()+ "\r\n");
         
-        System.out.println(Service.confirmerFinIntervention(intervention1, "Problème", "Fuite trop importante, obliger d'appeler des professionnels.").toString() + "\r\n");
-        System.out.println(Service.confirmerFinIntervention(intervention2, "Terminée", "").toString() + "\r\n");
-        System.out.println(Service.confirmerFinIntervention(intervention3, "Terminée", "Colis réceptionné et déposé chez la voisine d'en face").toString() + "\r\n");
+        
+        
         
         
         // Test de la méthode AfficheOpeDuJour
@@ -175,21 +212,6 @@ public class Main {
                 System.out.println(liste.get(i).toString() + "\r\n");
             }
         }*/
-        
-        // Test de la méthode AfficheHistorique
-        System.out.println("Test affichage historique");
-        List<Client> clientInfo = Service.chargerHistorique(cli);
-        System.out.println(clientInfo.toString());
-        if (!clientInfo.isEmpty()){
-            /*List<Intervention> historiqueClient = clientInfo.get(0).getInterventions();
-            for (Intervention intervention: historiqueClient){
-                System.out.println("testDebug1");
-                System.out.println(intervention.toString() + "\r\n");
-            }*/
-        }
-        else{
-            System.out.println("Vous n'avez jamais fait de demande d'intervention");
-        }
         
         JpaUTIL.destroy();
     }

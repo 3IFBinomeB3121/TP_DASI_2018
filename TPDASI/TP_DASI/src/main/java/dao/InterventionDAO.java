@@ -14,6 +14,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import modele.Animal;
+import modele.Client;
 import modele.Employe;
 import modele.Incident;
 import modele.Intervention;
@@ -62,20 +63,15 @@ public class InterventionDAO {
         return obtenirEntityManager().find(Intervention.class, index);
     }
     
-    
-    /*
-    public static List<Intervention> rechercherInterventionParEmploye(Employe emp) {
+    public static List<Intervention> rechercherInterventionDuClient(Client cli) {
         List<Intervention> listIntervention; 
         EntityManager em = JpaUTIL.obtenirEntityManager();
         Query query = em.createQuery("SELECT i FROM Intervention i where"
-                + " i.employe =:emp");
-        query.setParameter("emp", emp);
+                + " i.client =:cli");
+        query.setParameter("cli", cli);
         listIntervention = query.getResultList();
-        //TODO :
-        // Rechercher les interventions en fonction de l'id du client (pour AfficherHistorique)
         return listIntervention ;
     }
-    */
     
     public static List<Intervention> rechercherInterventionParHorodateEmploye(Employe emp, Calendar today, Calendar tomorrow) {
         //TODO :

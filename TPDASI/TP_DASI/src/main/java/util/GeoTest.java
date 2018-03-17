@@ -5,11 +5,13 @@ import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.OkHttpRequestHandler;
+import com.google.maps.errors.ApiException;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.TravelMode;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,7 +38,8 @@ public class GeoTest {
 
             return results[0].geometry.location;
 
-        } catch (Exception ex) {
+        } catch (ApiException | IOException | InterruptedException ex) {
+            System.out.println(ex);
             return null;
         }
     }
