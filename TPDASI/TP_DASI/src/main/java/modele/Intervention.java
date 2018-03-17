@@ -35,14 +35,14 @@ public abstract class Intervention implements Serializable {
     protected Client client;
     @ManyToOne
     protected Employe employe;
+    Double distance;
 
     public Intervention() {
         this.estFini = false;
     }
     
-    public Intervention(String description, Date horodate) {
+    public Intervention(String description) {
         this.description = description;
-        this.horodate = horodate;
         this.estFini = false;
     }
     
@@ -78,6 +78,10 @@ public abstract class Intervention implements Serializable {
         return etat;
     }
 
+    public Double getDistance() {
+        return distance;
+    }
+    
     public void setDescription(String description) {
         this.description = description;
     }
@@ -110,9 +114,13 @@ public abstract class Intervention implements Serializable {
         this.etat = etat;
     }
 
-    @Override
-    public String toString() {
-        return "Intervention{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe + '}';
+    public void setDistance(Double distanceDeLinter) {
+        this.distance = distanceDeLinter;
     }
 
+    @Override
+    public String toString() {
+        return "Intervention{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe + ", distance=" + distance + '}';
+    }
+    
 }

@@ -24,8 +24,8 @@ public class Employe extends Personne {
     @Version
     private int version;
 
-    public Employe(boolean disponibilite, int heureDebutDispo, int heureFinDispo, String civilite, String nom, String prenom, Date dateNaissance,String adresse, String mail, String motdepasse) {
-        super(civilite, nom, prenom, dateNaissance, adresse, mail, motdepasse);
+    public Employe(boolean disponibilite, int heureDebutDispo, int heureFinDispo, String civilite, String nom, String prenom, Date dateNaissance,String adresse, String mail, String numerotel, String motdepasse) {
+        super(civilite, nom, prenom, dateNaissance, adresse, mail, numerotel, motdepasse);
         this.disponibilite = disponibilite;
         this.heureDebutDispo = heureDebutDispo;
         this.heureFinDispo = heureFinDispo;

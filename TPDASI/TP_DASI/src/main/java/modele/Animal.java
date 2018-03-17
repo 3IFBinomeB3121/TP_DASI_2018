@@ -20,8 +20,8 @@ public class Animal extends Intervention{
     public Animal() {
     }
 
-    public Animal(String description, Date horodate, String unTypeAnimal) {
-        super(description, horodate);
+    public Animal(String description, String unTypeAnimal) {
+        super(description);
         this.typeAnimal = unTypeAnimal;
     }
 
@@ -35,6 +35,6 @@ public class Animal extends Intervention{
 
     @Override
     public String toString() {
-        return "Animal{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe + "}" + "typeAnimal=" + typeAnimal + "}";
+        return "Animal{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe + "}" + "typeAnimal=" + typeAnimal + ", distance=" + distance + "}";
     }
 }

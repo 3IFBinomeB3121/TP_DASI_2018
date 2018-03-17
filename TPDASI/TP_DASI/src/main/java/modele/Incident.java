@@ -19,13 +19,13 @@ public class Incident extends Intervention {
     public Incident() {
     }
 
-    public Incident(String description, Date horodate) {
-        super(description, horodate);
+    public Incident(String description) {
+        super(description);
     }
 
     @Override
     public String toString() {
-        return "Incident{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe + '}';
+        return "Incident{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe + ", distance=" + distance + '}';
     }
     
 }

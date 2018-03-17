@@ -21,8 +21,8 @@ public class Livraison extends Intervention{
     public Livraison() {
     }
 
-    public Livraison(String objet, String entreprise, String description, Date horodate) {
-        super(description, horodate);
+    public Livraison(String objet, String entreprise, String description) {
+        super(description);
         this.objet = objet;
         this.entreprise = entreprise;
     }
@@ -45,7 +45,7 @@ public class Livraison extends Intervention{
 
     @Override
     public String toString() {
-        return "Livraison{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe + ", objet=" + objet + ", entreprise=" + entreprise + '}';
+        return "Livraison{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe +", distancet=" + distance + ", objet=" + objet + ", entreprise=" + entreprise + '}';
     }
     
     

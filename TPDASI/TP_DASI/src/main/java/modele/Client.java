@@ -15,8 +15,8 @@ import javax.persistence.Entity;
 @Entity
 public class Client extends Personne {
 
-    public Client(String civilite, String nom, String prenom, Date dateNaissance, String adresse, String mail, String motdepasse) {
-        super(civilite, nom, prenom, dateNaissance, adresse, mail, motdepasse);
+    public Client(String civilite, String nom, String prenom, Date dateNaissance, String adresse, String mail, String numerotel, String motdepasse) {
+        super(civilite, nom, prenom, dateNaissance, adresse, mail, numerotel, motdepasse);
     }
 
     public Client() {

@@ -46,9 +46,9 @@ public class Main {
             System.out.println("erreur pour parser la date");
         }
         
-        Client cli = new Client("Monsieur", "Jackson", "Michael", d1, "1900 route de Vins, 83143, LE VAL", "chris@hotmail.fr", "coucou");
-        Client cli2 = new Client("Madame", "Carlita", "Josette", d1, "20 avenue albert einstein", "carlita.Josette@hotmail.fr", "carli");
-        Client cli3 = new Client("Mademoiselle", "iverson", "sophie", d1, "4, rue de la pastorale d'issy", "soph.ivers@hotmail.fr", "iverson");
+        Client cli = new Client("Monsieur", "Jackson", "Michael", d1, "1900 route de Vins, 83143, LE VAL", "chris@hotmail.fr", "0630276677", "coucou");
+        Client cli2 = new Client("Madame", "Carlita", "Josette", d1, "5 Rue Léon Fabre, Villeurbanne", "carlita.Josette@hotmail.fr", "0630276677", "carli");
+        Client cli3 = new Client("Mademoiselle", "iverson", "sophie", d1, "12 Rue de la Prevoyance, Villeurbanne", "soph.ivers@hotmail.fr", "0630276677", "iverson");
         try {
             Service.ajouterEmploye();
         } catch (ParseException ex) {
@@ -70,9 +70,9 @@ public class Main {
             System.out.println("erreur pour parser la date");
         }
         // On ajoute des interventions
-        Incident inter = new Incident("Fuite d'eau dans le sous-sol", dateInter1);
-        Animal inter2 = new Animal("Sortir le chien 15 minutes", dateInter1, "chien");
-        Livraison inter3 = new Livraison("vase", "Amazon", "Livraison colis fragile", dateInter1);
+        Incident inter = new Incident("Fuite d'eau dans le sous-sol");
+        Animal inter2 = new Animal("Sortir le chien 15 minutes", "chien");
+        Livraison inter3 = new Livraison("vase", "Amazon", "Livraison colis fragile");
         System.out.println(inter.toString() + "\r\n");
         System.out.println(inter2.toString() + "\r\n");
         System.out.println(inter3.toString() + "\r\n");
@@ -80,6 +80,9 @@ public class Main {
         System.out.println(Service.demanderIntervention(cli,inter2).toString()+ "\r\n");
         System.out.println(Service.demanderIntervention(cli,inter3).toString()+ "\r\n");
         
+        System.out.println(Service.finIntervention(inter, "Problème", "Fuite trop importante, obliger d'appeler des professionnels.").toString());
+        System.out.println(Service.finIntervention(inter2, "Terminée", "").toString());
+        System.out.println(Service.finIntervention(inter3, "Terminée", "Colis réceptionné et déposé chez la voisine d'en face").toString());
         
         
         // Test de la méthode AfficheOpeDuJour
@@ -94,6 +97,7 @@ public class Main {
         }*/
         
         // Test de la méthode AfficheHistorique
+        System.out.println("Test affichage historique");
         List<Client> clientInfo = Service.consulterHistorique(cli);
         System.out.println(clientInfo.toString());
         if (!clientInfo.isEmpty()){

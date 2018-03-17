@@ -6,6 +6,7 @@
 package service;
 
 import com.google.maps.model.LatLng;
+import com.google.maps.model.TravelMode;
 import dao.InterventionDAO;
 import static dao.InterventionDAO.update;
 import dao.JpaUTIL;
@@ -52,10 +53,10 @@ public class Service {
         int t4 = 23;
         int t5 = 20;
         
-        Employe emp2 = new Employe(true,t2,t3,"mme","eti","julie",d1,"4, rue du général", "julie.eti@hotmail.fr", "pdp");
-        Employe emp3 = new Employe(true,t3,t4,"mme","occ","marine",d2,"4, rue du president","ocmarine999@hotmail.fr","01239485");
-        Employe emp4 = new Employe(true,t2,t4,"m","barg","pauline",d3,"4, rue du coul","pauline.barg@gmail.com","0aedi55");
-        Employe emp5 = new Employe(true,t3,t5,"m","bell","gerard",d4,"4, rue du carabine", "gegedu90@gmail.com","coucouhesa");
+        Employe emp2 = new Employe(true,0,24,"mme","eti","julie",d1,"61 Avenue Roger Salengro, Villeurbanne", "0630276677", "julie.eti@hotmail.fr", "pdp");
+        Employe emp3 = new Employe(true,0,24,"mme","occ","marine",d2,"37 Avenue Jean Capelle Est, Villeurbanne","ocmarine999@hotmail.fr","0630276677","01239485");
+        Employe emp4 = new Employe(true,0,24,"m","barg","pauline",d3,"7 Avenue Jean Capelle Ouest, Villeurbanne","pauline.barg@gmail.com","0630276677","0aedi55");
+        Employe emp5 = new Employe(true,0,24,"m","bell","gerard",d4,"20 Avenue Albert Eisntein, Villeurbanne", "gegedu90@gmail.com","0630276677","coucouhesa");
         
         emp2.setCoords(calculerCoords(emp2.getAdresse()));
         emp3.setCoords(calculerCoords(emp3.getAdresse()));
@@ -185,16 +186,16 @@ public class Service {
         Intervention intervention = InterventionDAO.update(interv);
         
         // On recherche les employes dispo (voir condition dans DAO)
-        Date heureIntervention = interv.getHorodate();
+        Date heureIntervention = new Date();
         
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(heureIntervention);
-        
-        
+        /*Calendar calendar = Calendar.getInstance();
+        calendar.setTime(heureIntervention);*/
         
         // Gérer la distance et aussi trier par employe les plus proches !
         // attention ... stepvpar par défaut que je m'en fou mais pour google maps teste la possibilité de gérer les escales
         List<Employe> listEmployeDispo = PersonneDAO.RechercherEmployeDisponible(cli.getCoords(), 18);
+        Double duration = 100000000000.0;
+        int indiceEmpLePlusProche=0;
         
         boolean success = false;
         if (listEmployeDispo.isEmpty()){
@@ -203,14 +204,28 @@ public class Service {
         }
         else {
             while (!success && !listEmployeDispo.isEmpty()){
+                for (int i = 0; i<listEmployeDispo.size(); i++){
+                    Double tmp = GeoTest.getTripDurationByBicycleInMinute(cli.getCoords(), listEmployeDispo.get(i).getCoords());
+                    if (tmp<duration){
+                        duration = tmp;
+                        indiceEmpLePlusProche = i;
+                    }
+                }
                 Employe emp;
-                emp = PersonneDAO.mergeEmploye(listEmployeDispo.get(0));
+                emp = PersonneDAO.mergeEmploye(listEmployeDispo.get(indiceEmpLePlusProche));
+                Double laDistance = GeoTest.getTripDurationOrDistance(TravelMode.BICYCLING, false, cli.getCoords(), emp.getCoords());
                 emp.setDisponibilite(false);
                 intervention.setClient(cli);
                 intervention.setEmploye(emp);
+                intervention.setDistance(laDistance/1000.0);
+                intervention.setHorodate(heureIntervention);
+                /*Client client = PersonneDAO.mergeClient(cli);
+                client.addInterventions(intervention);*/
                 try {
-                    PersonneDAO.persistEmploye(emp);
                     InterventionDAO.persist(intervention);
+                    PersonneDAO.persistEmploye(emp);
+                    //PersonneDAO.persistClient(client);
+                    
                     JpaUTIL.validerTransaction();
                     success = true;
                 } catch (RollbackException e){
@@ -227,62 +242,70 @@ public class Service {
             return null;
         }
         else{
-            JpaUTIL.ouvrirTransaction();
-            System.out.println("passe");
-            Client client = PersonneDAO.mergeClient(cli);
-            System.out.println("passe2");
-            client.getInterventions().add(intervention);
-            System.out.println("passe3");
-            PersonneDAO.persistClient(client);
-            System.out.println("passe4");
-            JpaUTIL.validerTransaction();
+            
+            AvertirEmploye(intervention);
             JpaUTIL.fermerEntityManager();
             return intervention;
         }
     }
     
-    public static void AvertirEmploye (Employe emp, Intervention inter) {
+    public static void AvertirEmploye (Intervention inter) {
         //TODO
         //On vérifie si l'entity manager est ouvert
-        JpaUTIL.creerEntityManager();
         //On commence une transaction
         
         Personne cli = PersonneDAO.findPersonneByIndex(inter.getClient().getId());
-        System.out.println("Intervention" + inter.getClass() + "demandée le "
-                + inter.getHorodate() + "pour " + cli.getNom() + " " 
-                + cli.getPrenom() + "" + "(#" + cli.getId() + ")," 
-                + cli.getAdresse() + " : " + inter.getDescription());
         
-        //TODO: ajouter la distance entre l'employé et l'intervention
+        String typeIntervention = inter.getClass().toString().split(" ")[1];
+        String type = typeIntervention.replace('.',' ').split(" ")[1];
         
-        JpaUTIL.fermerEntityManager();
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd HH:mm");
+        String laDate = sf.format(inter.getHorodate());
+        
+        System.out.println("Intervention " + type + " demandée le "
+                + laDate + " pour " + cli.getPrenom() + " " 
+                + cli.getNom() + " " + "(#" + cli.getId() + "), " 
+                + cli.getAdresse() + " (" + inter.getDistance() + " km)" + " : " + inter.getDescription());
     }
     
-    public static void finIntervention (Employe emp, String etat, String commentaireEmp, Intervention interv) throws ParseException {
+    public static Intervention finIntervention (Intervention interv, String etat, String commentaireEmp){
         //TODO
-        Intervention intervention;
+        
         JpaUTIL.creerEntityManager();
         JpaUTIL.ouvrirTransaction();
         // On récupére les infos
-        intervention = update(interv);
+        Intervention intervention = InterventionDAO.update(interv);
+        System.out.println("Ok");
+        System.out.println(intervention.getEmploye());
+        System.out.println(interv.getEmploye());
+        Employe employe = PersonneDAO.mergeEmploye(intervention.getEmploye());
         
-        Date today = new Date();
-        intervention.setHeureFin(today);
+        Date finInter = new Date();
         
+        intervention.setHeureFin(finInter);
         intervention.setCommentaireEmp(commentaireEmp);
         intervention.setEtat(etat);
         intervention.setEstFini(true);
         
+        employe.setDisponibilite(true);
+        
         // On persist et valide (pour l'instant)
         InterventionDAO.persist(intervention);
+        PersonneDAO.persistEmploye(employe);
+        
         JpaUTIL.validerTransaction();
         JpaUTIL.fermerEntityManager();
         
         AvertirClient(intervention);
+        return intervention;
     }
     
     private static void AvertirClient (Intervention intervention) {
-        System.out.println("L'intervention a été effectuée à " + intervention.getHeureFin()
+        
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd HH:mm");
+        String laDate = sf.format(intervention.getHeureFin());
+        
+        System.out.println("L'intervention a été effectuée à " + laDate
             + ".\r\n Etat de l'intervention : " + intervention.getEtat() + "\r\n");
         if (!intervention.getCommentaireEmp().equals("")){
             System.out.println("Commentaire de l'employé : " + intervention.getCommentaireEmp());

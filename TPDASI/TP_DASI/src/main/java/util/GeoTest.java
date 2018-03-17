@@ -112,7 +112,7 @@ public class GeoTest {
 
     public static void main(String[] args) {
 
-        if (MA_CLE_GOOGLE_API.equals("XXXXXXXX-Moodle-ClÃ©")) {
+        if (MA_CLE_GOOGLE_API.equals("AIzaSyAhf3JleYpal9S-xouJYH8lf7Dvz5Y2Nko")) {
             for (int i=0; i<100; i++) {
                 System.err.println("[ERREUR] VOUS AVEZ OUBLIE DE CHANGER LA CLE DE L'API !!!!!");
             }

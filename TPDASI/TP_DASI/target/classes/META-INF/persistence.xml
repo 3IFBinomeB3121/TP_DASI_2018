@@ -10,7 +10,7 @@
     <class>modele.Incident</class>
     <class>modele.Livraison</class>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/PROACTIF_database"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/PROACTIF_db"/>
       <property name="javax.persistence.jdbc.user" value="cetienne"/>
       <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
       <property name="javax.persistence.jdbc.password" value="Valentin1907"/>

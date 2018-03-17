@@ -40,6 +40,7 @@ public abstract class Personne implements Serializable {
     protected Date dateNaissance;
     protected String adresse;
     protected String mail;
+    protected String numTel;
     protected LatLng coords;
     protected String motdepasse;
     @OneToMany
@@ -53,14 +54,15 @@ public abstract class Personne implements Serializable {
     public Personne() {
     }
 
-    public Personne( String civilite, String nom, String prenom, Date dateNaissance, String adresse, String mail, String motdepasse) {
+    public Personne( String civilite, String nom, String prenom, Date dateNaissance, String adresse, String mail, String numerotel, String motdepasse) {
         this.civilite = civilite;
         this.nom = nom;
         this.prenom = prenom;
         this.dateNaissance = dateNaissance;
         this.adresse = adresse;
         this.mail = mail;
-        this.interventions = new ArrayList<Intervention>();
+        this.numTel = numerotel;
+        this.interventions = new ArrayList<>();
         this.motdepasse = motdepasse;
     }
 
@@ -107,6 +109,11 @@ public abstract class Personne implements Serializable {
         return mail;
     }
 
+    public String getNumTel() {
+        return numTel;
+    }
+    
+
     public List<Intervention> getInterventions() {
         return interventions;
     }
@@ -134,8 +141,24 @@ public abstract class Personne implements Serializable {
     public void setMail(String mail) {
         this.mail = mail;
     }
+
+    public void setNumTel(String numTel) {
+        this.numTel = numTel;
+    }
+    
     public void setInterventions(List<Intervention> interventions) {
        this.interventions = interventions;
+    }
+    
+    public void addInterventions(Intervention intervention){
+        this.interventions.add(intervention);
+        if (this.getClass() == Client.class){
+            intervention.setClient((Client) this);
+        }
+        else
+        {
+            intervention.setEmploye((Employe) this);
+        }
     }
     
     //--------------------------------------------------- toString

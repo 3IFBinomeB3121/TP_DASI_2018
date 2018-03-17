@@ -39,7 +39,7 @@ public class PersonneDAO {
     }
     
     public static Personne findPersonneByIndex (Long index) {
-        return obtenirEntityManager().find(Employe.class, index);
+        return obtenirEntityManager().find(Personne.class, index);
     }
     
     public static List<Employe> RechercherEmployeDisponible(LatLng coord, int heureInter) {
