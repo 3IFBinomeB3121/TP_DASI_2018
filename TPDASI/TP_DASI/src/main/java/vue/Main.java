@@ -6,10 +6,12 @@
 package vue;
 
 import dao.JpaUTIL;
+import dao.PersonneDAO;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modele.Animal;
@@ -18,7 +20,9 @@ import modele.Employe;
 import modele.Incident;
 import modele.Intervention;
 import modele.Livraison;
+import modele.Personne;
 import service.Service;
+import util.Saisie;
 
 /**
  *
@@ -35,30 +39,6 @@ public class Main {
         // TODO code application logic here
         
         // Test de inscrireClient
-        // Test de seConnecter
-        // Test de chargerHistorique
-        // Test de consulterOpeDuJour
-        // Test de demanderIntervention
-        // Test de confirmerFinIntervention
-        
-        // Scénario: je m'inscris, l'historique se charge, je demande une intervention
-        // Un employé est affecté. Il déclare la fin de l'intervention. L'historique
-        // se recharge à nouveau avec les modifications apportées. De même pour le tableau de bord
-        // de l'employé
-        
-        // Test cas particulier : 
-        //      - Aucun employe dispo 
-        //          --> Non dispo car deja en intervention
-        //          --> Non dispo a cause des horaires de travail
-        //      - Mail deja existant dans la bd
-        //      - Mail correspond pour la connection mais pas le mot de passe
-        //      - Adresse rentrée non valide donc pas de coordonnées
-        //      - Deux accés aux mêmes employés en même temps (Accés concurrentiels)
-        //      - Verification que l'employe selectionne est bien dispo
-        //      - Verification que l'employe selectionne est bien celui dont la durée est la plus courte
-        //      - Verification de la demande d'intervention dans les 3 cas possibles
-        //
-        
         SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy");
         String date = "12-05-1982";
         Date d1 = new Date();
@@ -83,14 +63,90 @@ public class Main {
         System.out.println(cli2.toString() + "\r\n");
         System.out.println(cli3.toString() + "\r\n");
         
+        Saisie.pause();
         
-        String dateInString = "12-01-2018 17:40:56";
-        Date dateInter1 = null;
-        try{
-            dateInter1 = sdf.parse(dateInString);
-        } catch (ParseException pe){
-            System.out.println("erreur pour parser la date");
+        // Test de seConnecter (client et employe)
+        
+        JpaUTIL.creerEntityManager();
+        Client unClient = PersonneDAO.mergeClient(cli);
+        Personne persConnexionSuccess = Service.seConnecter(unClient.getMail(), unClient.getMotdepasse());
+        System.out.println(persConnexionSuccess);
+        Personne persConnexionFail = Service.seConnecter("mail_non_existant@hotmail.fr", "motdepasse");
+        if (persConnexionFail == null){
+            System.out.println("Le mail ou mot de passe rentré n'est pas valide.");
         }
+        JpaUTIL.fermerEntityManager();
+        
+        Saisie.pause();
+        
+        // Test de demanderIntervention
+        
+        String comments = "";
+        boolean typeCorrect = false;
+        boolean plusieursInterventions = false;
+        Integer nbInter = Saisie.lireInteger("Combien de demandes d'interventions souhaitez-vous faire (pour test) : 0 (non) ou 1 (oui)");
+        Intervention interventionDemandee;
+        for (int i = 0; i< nbInter.intValue(); i++){
+            while (!typeCorrect){
+                Integer type = Saisie.lireInteger("Quel type d'intervention souhaitez-vous demander ?\r\n1 - Incident\r\n2 - Animal\r\n - Livraison");
+                switch (type){
+                    case 1:
+                        comments = Saisie.lireChaine("Des commentaires sur l'intervention ?");
+                        Incident inter = new Incident(comments);
+                        typeCorrect = true;
+                        interventionDemandee = Service.demanderIntervention(cli, inter);
+                        System.out.println(interventionDemandee.toString() + "\r\n");
+                        break;
+                    case 2:
+                        String typeAnimal = Saisie.lireChaine("Quel type d'animal concerne l'intervention?");
+                        comments = Saisie.lireChaine("Commentaires sur l'intervention ?");
+                        Animal inter2 = new Animal(comments, typeAnimal);
+                        typeCorrect = true;
+                        interventionDemandee = Service.demanderIntervention(cli, inter2);
+                        System.out.println(interventionDemandee.toString() + "\r\n");
+                        break;
+                    case 3:
+                        String objet = Saisie.lireChaine("Quel objet allez-vous vous faire livrer ?");
+                        String entreprise = Saisie.lireChaine("Par quel entreprise de livraison?");
+                        comments = Saisie.lireChaine("Commentaires sur l'intervention ?");
+                        Livraison inter3 = new Livraison(objet, entreprise, comments);
+                        typeCorrect = true;
+                        interventionDemandee = Service.demanderIntervention(cli, inter3);
+                        System.out.println(interventionDemandee.toString() + "\r\n");
+                        break;
+                    default:
+                        System.out.println("Chiffre rentré non conforme, veuillez le renseignez à nouveau");
+                }
+            }
+        }
+        
+        // Test de chargerHistorique
+        
+        // Test de consulterOpeDuJour
+        // Test de demanderIntervention
+        // Test de confirmerFinIntervention
+        
+        // Scénario: je m'inscris, l'historique se charge, je demande une intervention
+        // Un employé est affecté. Il déclare la fin de l'intervention. L'historique
+        // se recharge à nouveau avec les modifications apportées. De même pour le tableau de bord
+        // de l'employe
+        
+        // Test cas particulier : 
+        //      - Aucun employe dispo 
+        //          --> Non dispo car deja en intervention
+        //          --> Non dispo a cause des horaires de travail
+        //      - Mail deja existant dans la bd
+        //      - Mail correspond pour la connection mais pas le mot de passe
+        //      - Adresse rentrée non valide donc pas de coordonnées
+        //      - Deux accés aux mêmes employés en même temps (Accés concurrentiels)
+        //      - Verification que l'employe selectionne est bien dispo
+        //      - Verification que l'employe selectionne est bien celui dont la durée est la plus courte
+        //      - Verification de la demande d'intervention dans les 3 cas possibles
+        //
+        // Reste à faire au niveau du code: 
+        //      - Javadoc
+        //      - 
+        
         // On ajoute des interventions
         Incident inter = new Incident("Fuite d'eau dans le sous-sol");
         Animal inter2 = new Animal("Sortir le chien 15 minutes", "chien");
