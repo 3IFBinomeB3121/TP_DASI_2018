@@ -30,7 +30,7 @@ public class InterventionDAO {
         obtenirEntityManager().persist(inter);
     }
     
-    public static Intervention update(Intervention inter){
+    public static Intervention merge(Intervention inter){
         return obtenirEntityManager().merge(inter);
     }
     
@@ -63,8 +63,8 @@ public class InterventionDAO {
     }
     
     
-    
-    public static List<Intervention> RechercherInterventionParEmploye(Employe emp) {
+    /*
+    public static List<Intervention> rechercherInterventionParEmploye(Employe emp) {
         List<Intervention> listIntervention; 
         EntityManager em = JpaUTIL.obtenirEntityManager();
         Query query = em.createQuery("SELECT i FROM Intervention i where"
@@ -75,9 +75,9 @@ public class InterventionDAO {
         // Rechercher les interventions en fonction de l'id du client (pour AfficherHistorique)
         return listIntervention ;
     }
+    */
     
-    
-    public static List<Intervention> RechercherInterventionParHorodateEmploye(Employe emp, Calendar today, Calendar tomorrow) {
+    public static List<Intervention> rechercherInterventionParHorodateEmploye(Employe emp, Calendar today, Calendar tomorrow) {
         //TODO :
         // Rechercher les interventions en fonction de l'id de l'employe (pour AfficherOpeDuJour)
         // et de la date demandée

@@ -142,7 +142,7 @@ public class Service {
         }
     }*/
     
-    public static Personne SeConnecter (String mail, String mdp) {
+    public static Personne seConnecter (String mail, String mdp) {
         //TODO
         // Idée : Comparer avec tous les pseudo de la base (e-mail ici) et voir 
         // s'il existe déja. Si oui --> verifier que le mot de passe est le même
@@ -152,24 +152,24 @@ public class Service {
         JpaUTIL.creerEntityManager();
         
         List<Personne> pers = PersonneDAO.verifierExistencePersonne(mail, mdp);
+        
         if (pers.isEmpty()){
             JpaUTIL.fermerEntityManager();
             return null;
         }
         else {
-            //List<String> mdpCorrespond = PersonneDAO.verifierCorrespondanceMdp(mail, mdp);
             JpaUTIL.fermerEntityManager();
             return pers.get(0);
         }
     }
     
-    public static List<Client> consulterHistorique(Client cli) {
+    public static List<Client> chargerHistorique(Client cli) {
         //TODO
         //On vérifie si l'entity manager est ouvert
         JpaUTIL.creerEntityManager();
         
         List<Client> listIntervClient;
-        listIntervClient = PersonneDAO.RechercherInterventionParIdClient(cli.getId());
+        listIntervClient = PersonneDAO.rechercherInterventionParIdClient(cli.getId());
         
         JpaUTIL.fermerEntityManager();
         return listIntervClient;
@@ -181,14 +181,14 @@ public class Service {
         JpaUTIL.creerEntityManager();
         JpaUTIL.ouvrirTransaction();
         
-        Intervention intervention = InterventionDAO.update(interv);
+        Intervention intervention = InterventionDAO.merge(interv);
         
         // On recherche les employes dispo (voir condition dans DAO)
         Date heureIntervention = new Date();
         
         // Gérer la distance et aussi trier par employe les plus proches !
         // attention ... stepvpar par défaut que je m'en fou mais pour google maps teste la possibilité de gérer les escales
-        List<Employe> listEmployeDispo = PersonneDAO.RechercherEmployeDisponible(cli.getCoords(), heureIntervention.getHours());
+        List<Employe> listEmployeDispo = PersonneDAO.rechercherEmployeDisponible(cli.getCoords(), heureIntervention.getHours());
         Double duration = 100000000000.0;
         int indiceEmpLePlusProche=0;
         
@@ -228,7 +228,7 @@ public class Service {
                     // Rafrachir la liste des employes au cas ou d'autres se serait rendu dispo
                     success = false;
                     JpaUTIL.annulerTransaction();
-                    listEmployeDispo = PersonneDAO.RechercherEmployeDisponible(cli.getCoords(), heureIntervention.getHours());
+                    listEmployeDispo = PersonneDAO.rechercherEmployeDisponible(cli.getCoords(), heureIntervention.getHours());
                 }
             }
         }
@@ -237,17 +237,14 @@ public class Service {
             return null;
         }
         else{
-            AvertirEmploye(intervention);
+            avertirEmployeNouvelleIntervention(intervention);
             JpaUTIL.fermerEntityManager();
             return intervention;
         }
     }
     
-    public static void AvertirEmploye (Intervention inter) {
+    public static void avertirEmployeNouvelleIntervention (Intervention inter) {
         //TODO
-        //On vérifie si l'entity manager est ouvert
-        //On commence une transaction
-        
         Personne cli = PersonneDAO.findPersonneByIndex(inter.getClient().getId());
         
         String typeIntervention = inter.getClass().toString().split(" ")[1];
@@ -262,13 +259,13 @@ public class Service {
                 + cli.getAdresse() + " (" + inter.getDistance() + " km)" + " : " + inter.getDescription());
     }
     
-    public static Intervention finIntervention (Intervention interv, String etat, String commentaireEmp){
+    public static Intervention confirmerFinIntervention (Intervention interv, String etat, String commentaireEmp){
         //TODO
         
         JpaUTIL.creerEntityManager();
         JpaUTIL.ouvrirTransaction();
         // On récupére les infos
-        Intervention intervention = InterventionDAO.update(interv);
+        Intervention intervention = InterventionDAO.merge(interv);
         Employe employe = PersonneDAO.mergeEmploye(intervention.getEmploye());
         
         Date finInter = new Date();
@@ -287,11 +284,11 @@ public class Service {
         JpaUTIL.validerTransaction();
         JpaUTIL.fermerEntityManager();
         
-        AvertirClient(intervention);
+        avertirClientFinIntervention(intervention);
         return intervention;
     }
     
-    private static void AvertirClient (Intervention intervention) {
+    private static void avertirClientFinIntervention (Intervention intervention) {
         
         SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd HH:mm");
         String laDate = sf.format(intervention.getHeureFin());
@@ -303,7 +300,7 @@ public class Service {
         }
     }
     
-    public static List<Intervention> AfficherOpeDuJour (Employe emp) {
+    public static List<Intervention> afficherOpeDuJour (Employe emp) {
         //TODO
         //On vérifie si l'entity manager est ouvert
         JpaUTIL.creerEntityManager();
@@ -318,11 +315,12 @@ public class Service {
         tomorrow.add(Calendar.DAY_OF_YEAR,1);
         
         List<Intervention> listInterv; // Verifier s'il ne faut pas faire un new
-        listInterv = InterventionDAO.RechercherInterventionParHorodateEmploye(emp, today, tomorrow);
+        listInterv = InterventionDAO.rechercherInterventionParHorodateEmploye(emp, today, tomorrow);
         
         JpaUTIL.fermerEntityManager();
         return listInterv;
     }
+    
     /*
     public static List<Intervention> AfficherOpeFiltreJour (Employe emp, Date filtreDate) {
         //TODO

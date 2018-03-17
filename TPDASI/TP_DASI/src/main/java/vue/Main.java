@@ -34,9 +34,31 @@ public class Main {
         
         // TODO code application logic here
         
-        // On ajoute des employés et des clients à notre base
+        // Test de inscrireClient
+        // Test de seConnecter
+        // Test de chargerHistorique
+        // Test de consulterOpeDuJour
+        // Test de demanderIntervention
+        // Test de confirmerFinIntervention
         
-        // Pour les dates de naissances des clients
+        // Scénario: je m'inscris, l'historique se charge, je demande une intervention
+        // Un employé est affecté. Il déclare la fin de l'intervention. L'historique
+        // se recharge à nouveau avec les modifications apportées. De même pour le tableau de bord
+        // de l'employé
+        
+        // Test cas particulier : 
+        //      - Aucun employe dispo 
+        //          --> Non dispo car deja en intervention
+        //          --> Non dispo a cause des horaires de travail
+        //      - Mail deja existant dans la bd
+        //      - Mail correspond pour la connection mais pas le mot de passe
+        //      - Adresse rentrée non valide donc pas de coordonnées
+        //      - Deux accés aux mêmes employés en même temps (Accés concurrentiels)
+        //      - Verification que l'employe selectionne est bien dispo
+        //      - Verification que l'employe selectionne est bien celui dont la durée est la plus courte
+        //      - Verification de la demande d'intervention dans les 3 cas possibles
+        //
+        
         SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy");
         String date = "12-05-1982";
         Date d1 = new Date();
@@ -82,9 +104,9 @@ public class Main {
         System.out.println(intervention2.toString()+ "\r\n");
         System.out.println(intervention3.toString()+ "\r\n");
         
-        System.out.println(Service.finIntervention(intervention1, "Problème", "Fuite trop importante, obliger d'appeler des professionnels.").toString() + "\r\n");
-        System.out.println(Service.finIntervention(intervention2, "Terminée", "").toString() + "\r\n");
-        System.out.println(Service.finIntervention(intervention3, "Terminée", "Colis réceptionné et déposé chez la voisine d'en face").toString() + "\r\n");
+        System.out.println(Service.confirmerFinIntervention(intervention1, "Problème", "Fuite trop importante, obliger d'appeler des professionnels.").toString() + "\r\n");
+        System.out.println(Service.confirmerFinIntervention(intervention2, "Terminée", "").toString() + "\r\n");
+        System.out.println(Service.confirmerFinIntervention(intervention3, "Terminée", "Colis réceptionné et déposé chez la voisine d'en face").toString() + "\r\n");
         
         
         // Test de la méthode AfficheOpeDuJour
@@ -100,7 +122,7 @@ public class Main {
         
         // Test de la méthode AfficheHistorique
         System.out.println("Test affichage historique");
-        List<Client> clientInfo = Service.consulterHistorique(cli);
+        List<Client> clientInfo = Service.chargerHistorique(cli);
         System.out.println(clientInfo.toString());
         if (!clientInfo.isEmpty()){
             /*List<Intervention> historiqueClient = clientInfo.get(0).getInterventions();

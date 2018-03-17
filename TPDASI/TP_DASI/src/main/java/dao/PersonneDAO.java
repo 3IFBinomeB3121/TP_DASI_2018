@@ -42,7 +42,7 @@ public class PersonneDAO {
         return obtenirEntityManager().find(Personne.class, index);
     }
     
-    public static List<Employe> RechercherEmployeDisponible(LatLng coord, int heureInter) {
+    public static List<Employe> rechercherEmployeDisponible(LatLng coord, int heureInter) {
         List<Employe> listEmploye; 
         //TODO :
         // Rechercher un employé en fction de sa disponibilité et comparer avec les coordonnées
@@ -81,7 +81,7 @@ public class PersonneDAO {
         return personneListe;
     }
     
-    public static List<Client> RechercherInterventionParIdClient(Long idClient) {
+    public static List<Client> rechercherInterventionParIdClient(Long idClient) {
         List<Client> listInterventionClient; 
         EntityManager em = JpaUTIL.obtenirEntityManager();
         Query query = em.createQuery("SELECT c FROM Client c where"
