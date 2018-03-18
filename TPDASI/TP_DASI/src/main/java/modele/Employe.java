@@ -13,8 +13,11 @@ import javax.persistence.Entity;
 import javax.persistence.Version;
 
 /**
- *
- * @author cetienne
+ * Objet métier Employe. Classe héritant de l'objet métier {@link Personne}.
+ * Objet métier représentant un employé de l'entreprise PROACT'IF
+ * 
+ * @author Christophe Etienne
+ * @author William Occelli
  */
 @Entity
 public class Employe extends Personne {

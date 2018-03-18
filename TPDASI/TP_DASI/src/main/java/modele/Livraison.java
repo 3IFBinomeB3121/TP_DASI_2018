@@ -44,6 +44,13 @@ public class Livraison extends Intervention{
         this.entreprise = entreprise;
     }
 
+    /**
+     * Redéfinition de la méthode {@link toString()}
+     * Affiche toutes les informations concernant l'intervention de type Livraison
+     * 
+     * @return {@link String} une chaîne de caractère contenant toutes les 
+     * informations de l'{@link Intervention} de type Livraison
+     */
     @Override
     public String toString() {
         SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd HH:mm");

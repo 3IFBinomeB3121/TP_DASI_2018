@@ -14,7 +14,12 @@ import modele.Employe;
 import modele.Personne;
 
 /**
- *
+ * Classe gérant le stockage des données. Elle permet de réaliser des opérations
+ * classiques de stockage telles que la lecture, merge (rattachement d'une 
+ * instance à l'entity manager courant) et persist (rendre persistant une 
+ * instance). Ces opérations sont réalisées pour les instances 
+ * de {@link Personne}, d'{@link Employe} et de {@link Client}.
+ * 
  * @author Christophe Etienne
  * @author William Occelli
  */
@@ -22,7 +27,7 @@ public class PersonneDAO {
     
     /**
      * Méthode permettant de rendre persistant une instance {@link Employe} 
-     * passé en paramètre
+     * passée en paramètre
      * 
      * @param emp {@link Employe} l'employé à rendre persistant
      */
@@ -31,12 +36,12 @@ public class PersonneDAO {
     }
     
     /**
-     * Méthode permettant d'attacher une instance {@link Employe} passé en 
+     * Méthode permettant d'attacher une instance {@link Employe} passée en 
      * paramétre à l'entity manager courant
      * 
      * @param emp {@link Employe} l'employé à attaché à l'entity manager
      * 
-     * @return Une instance {@link Employe} correspondant à l'employé qu'on vient
+     * @return Une instance {@link Employe} correspondante à l'employé qu'on vient
      * de rattacher à l'entity manager
      */
     public static Employe mergeEmploye (Employe emp) {
@@ -45,7 +50,7 @@ public class PersonneDAO {
         
     /**
      * Méthode permettant de rendre persistant une instance {@link Client} 
-     * passé en paramètre
+     * passée en paramètre
      * 
      * @param cli {@link Client} le client à rendre persistant
      */
@@ -54,17 +59,18 @@ public class PersonneDAO {
     }
     
     /**
-     * Méthode permettant d'attacher une instance {@link Client} passé en 
+     * Méthode permettant d'attacher une instance {@link Client} passée en 
      * paramétre à l'entity manager courant
      * 
      * @param cli {@link Client} le client à attaché à l'entity manager
      * 
-     * @return Une instance {@link Client} correspondant au client qu'on vient
+     * @return Une instance {@link Client} correspondante au client qu'on vient
      * de rattacher à l'entity manager
      */
     public static Client mergeClient (Client cli) {
         return obtenirEntityManager().merge(cli);
     }
+    
     /**
      * Méthode permettant de trouver une instance {@link Personne} grâce à son 
      * id dans la base de données.
@@ -87,7 +93,7 @@ public class PersonneDAO {
      * 
      * @param heureInter {@link int} l'heure de la demande d'intervention
      * 
-     * @return {@link List} d'instance {@link Employe} contenant tous les 
+     * @return {@link List} d'{@link Employe} contenant tous les 
      * employés disponibles
      */
     public static List<Employe> rechercherEmployeDisponible(int heureInter) {
@@ -111,7 +117,7 @@ public class PersonneDAO {
      * @param mail {@link String} l'e-mail de la personne 
      * @param mdp {@link String} le mot de passe de la personne
      * 
-     * @return {@link List} d'instance {@link Personne} contenant la personne
+     * @return {@link List} de {@link Personne} contenant la personne
      * si elle est bien inscrite dans la base de données sinon renvoie une liste
      * vide.
      * 
@@ -133,7 +139,7 @@ public class PersonneDAO {
      * 
      * @param mail {@link String} e-mail dont on cherche à vérifier l'unicité
      * 
-     * @return {@link List} d'instance {@link Personne} qui est vide si l'e-mail
+     * @return {@link List} de {@link Personne} qui est vide si l'e-mail
      * n'existe pas dans la base de données sinon contient l'instance de 
      * {@link Personne} qui posséde cette e-mail
      */
@@ -150,7 +156,7 @@ public class PersonneDAO {
      * Méthode permettant de retourner toutes les instances de {@link Client}
      * que contient la base de données. 
      * 
-     * @return {@link List} d'instance {@link Client} qui contient tous les 
+     * @return {@link List} de {@link Client} qui contient tous les 
      * clients de la base de données.
      */
     public static List<Client> recupererTousLesClients() {
