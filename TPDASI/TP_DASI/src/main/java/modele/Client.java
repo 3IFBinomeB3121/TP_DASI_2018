@@ -10,7 +10,8 @@ import java.util.Date;
 import javax.persistence.Entity;
 
 /**
- * Objet métier Client. Classe héritant de l'objet métier {@link Personne}.
+ * Objet métier Client. Classe persistante héritant de l'objet métier
+ * {@link Personne}.
  * Objet métier représentant un client du site PROACT'IF
  * 
  * @author Christophe Etienne
@@ -20,22 +21,25 @@ import javax.persistence.Entity;
 public class Client extends Personne {
 
     /**
-     * Constructeur paramétré faisant appel au constructeur de la clase mère
+     * Constructeur paramétré faisant appel au constructeur de la classe parente
      * {@link Personne}
      * 
-     * @param civilite {@link String} la civilité du client (m ou mr)
-     * @param nom
-     * @param prenom
-     * @param dateNaissance
-     * @param adresse
-     * @param mail
-     * @param numerotel
-     * @param motdepasse 
+     * @param civilite {@link String} la civilité du client (M ou Mme)
+     * @param nom {@link String} le nom du client
+     * @param prenom {@link String} le prenom du client
+     * @param dateNaissance {@link Date} la date de naissance du client
+     * @param adresse {@link String} l'adresse du client
+     * @param mail {@link String} le mot de passe du client
+     * @param numerotel {@link String} le numéro de téléphone du client
+     * @param motdepasse {@link String} le mot de passe du client
      */
     public Client(String civilite, String nom, String prenom, Date dateNaissance, String adresse, String mail, String numerotel, String motdepasse) {
         super(civilite, nom, prenom, dateNaissance, adresse, mail, numerotel, motdepasse);
     }
 
+    /**
+     * Constructeur par défaut de l'objet métier Client
+     */
     public Client() {
     }
 

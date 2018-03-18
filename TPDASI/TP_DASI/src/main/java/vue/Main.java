@@ -6,17 +6,14 @@
 package vue;
 
 import dao.JpaUTIL;
-import dao.PersonneDAO;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modele.Animal;
 import modele.Client;
-import modele.Employe;
 import modele.Incident;
 import modele.Intervention;
 import modele.Livraison;
@@ -25,8 +22,13 @@ import service.Service;
 import util.Saisie;
 
 /**
- *
- * @author cetienne
+ * Classe simulant le côté IHM de notre application. Elle permet d'effectuer
+ * des tests et de dérouler un scénario correspondant à la navigation sur le
+ * site PROACT'IF. L'ensemble des tests se terminent par un affichage
+ * dans la console des informations permettant d'attester du succès du test
+ * 
+ * @author Christophe Etienne
+ * @author William Occelli
  */
 public class Main {
 
@@ -36,7 +38,29 @@ public class Main {
     public static void main(String[] args) {
         JpaUTIL.init();
         
-        // TODO code application logic here
+        // Scénario: je m'inscris, l'historique se charge, je demande une intervention
+        // Un employé est affecté. Il déclare la fin de l'intervention. L'historique
+        // se recharge à nouveau avec les modifications apportées. De même pour le tableau de bord
+        // de l'employe
+        
+        // Test cas particulier : 
+        //      - Aucun employe dispo 
+        //          --> Non dispo car deja en intervention
+        //          --> Non dispo a cause des horaires de travail
+        //      - Mail deja existant dans la bd
+        //      - Mail correspond pour la connection mais pas le mot de passe
+        //      - Adresse rentrée non valide donc pas de coordonnées
+        //      - Deux accés aux mêmes employés en même temps (Accés concurrentiels)
+        //      - Verification que l'employe selectionne est bien dispo
+        //      - Verification que l'employe selectionne est bien celui dont la durée est la plus courte
+        //      - Verification de la demande d'intervention dans les 3 cas possibles
+        //
+        // Reste à faire au niveau du code : 
+        //      - Cas particuliers dans une classe à part ?
+        //      - Vérifier Rollback pour tous les commits
+        //      - Améliorer l'affichage pour scénario (voir avec William)
+        //      - Améliorer le scénario
+        //      - Découper le code en petites méthodes ? 
         
         // Test de inscrireClient
         SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy");
@@ -50,7 +74,7 @@ public class Main {
         
         Client cli = new Client("Monsieur", "Jackson", "Michael", d1, "1900 route de Vins, 83143, LE VAL", "chris@hotmail.fr", "0630276677", "coucou");
         Client cli2 = new Client("Madame", "Carlita", "Josette", d1, "5 Rue Léon Fabre, Villeurbanne", "carlita.Josette@hotmail.fr", "0630276677", "carli");
-        Client cli3 = new Client("Mademoiselle", "iverson", "sophie", d1, "12 Rue de la Prevoyance, Villeurbanne", "soph.ivers@hotmail.fr", "0630276677", "iverson");
+        Client cli3 = new Client("Mademoiselle", "iverson", "Sophie", d1, "12 Rue de la Prevoyance, Villeurbanne", "soph.ivers@hotmail.fr", "0630276677", "iverson");
         try {
             Service.ajouterEmploye();
         } catch (ParseException ex) {
@@ -69,7 +93,6 @@ public class Main {
         Saisie.pause();
         
         // Test de seConnecter (client et employe)
-        
         
         Personne persConnexionSuccess = Service.seConnecter(clientsInfos.get(0).getMail(), clientsInfos.get(0).getMotdepasse());
         System.out.println(persConnexionSuccess.toString());
@@ -172,46 +195,6 @@ public class Main {
         }
         
         Saisie.pause();
-        
-        // Scénario: je m'inscris, l'historique se charge, je demande une intervention
-        // Un employé est affecté. Il déclare la fin de l'intervention. L'historique
-        // se recharge à nouveau avec les modifications apportées. De même pour le tableau de bord
-        // de l'employe
-        
-        // Test cas particulier : 
-        //      - Aucun employe dispo 
-        //          --> Non dispo car deja en intervention
-        //          --> Non dispo a cause des horaires de travail
-        //      - Mail deja existant dans la bd
-        //      - Mail correspond pour la connection mais pas le mot de passe
-        //      - Adresse rentrée non valide donc pas de coordonnées
-        //      - Deux accés aux mêmes employés en même temps (Accés concurrentiels)
-        //      - Verification que l'employe selectionne est bien dispo
-        //      - Verification que l'employe selectionne est bien celui dont la durée est la plus courte
-        //      - Verification de la demande d'intervention dans les 3 cas possibles
-        //
-        // Reste à faire au niveau du code: 
-        //      - Javadoc
-        //      - 
-        
-        // On ajoute des interventions
-        
-        
-        
-        
-        
-        
-        
-        // Test de la méthode AfficheOpeDuJour
-        /*LocalTime t2 = LocalTime.of(10,0,0,0);
-        LocalTime t3 = LocalTime.of(15,0,0,0);
-        Employe emp2 = new Employe(true,t2,t3,"mme","test","julia",LocalDate.of(1997,12,31),"4, rue du général", "julie.eti@gmail.fr", "pdp");
-        List<Intervention> liste = ServicePersonne.AfficherOpeDuJour(emp2);
-        if (!liste.isEmpty()){
-            for (int i = 0; i<liste.size(); i++){
-                System.out.println(liste.get(i).toString() + "\r\n");
-            }
-        }*/
         
         JpaUTIL.destroy();
     }

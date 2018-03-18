@@ -1,19 +1,12 @@
 
 package service;
 
-/**
- * Service est la classe représentant 
- * 
- * @author Christophe Etienne
- * @author William Occelli
- * @version 1.0
- */
-
 import com.google.maps.model.LatLng;
 import com.google.maps.model.TravelMode;
 import dao.InterventionDAO;
 import dao.JpaUTIL;
 import dao.PersonneDAO;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,11 +23,22 @@ import modele.Personne;
 import util.GeoTest;
 
 /**
- *
- * @author cetienne
+ * Service est la classe gérant tous les services transactionnels et 
+ * non transactionnels nécessaires à notre application métier
+ * 
+ * @author Christophe Etienne
+ * @author William Occelli
+ * @version 1.0
  */
 public class Service {
     
+    /**
+     * Méthode permettant d'ajouter des {@link Employe} dans la base de données
+     * pour effectuer des tests de l'application.
+     * 
+     * @throws ParseException Exception liée à la tentative de parser
+     * une chaîne de caractère en date
+     */
     public static void ajouterEmploye() throws ParseException {
         //On crée l'objet Personne correspondant
         //Employe emp = new Employe(true,heuredebut,heurefin,civilite,nom,prenom,dateNaissance,age,adresse,motdepasse);
@@ -87,20 +91,16 @@ public class Service {
         //On commit la transaction
         JpaUTIL.validerTransaction();
         JpaUTIL.fermerEntityManager();
-        
-        System.out.println(emp);
-        System.out.println(emp2);
-        System.out.println(emp3);
-        System.out.println(emp4);
-        System.out.println(emp5);
-        System.out.println(emp6);
     }
     
+    /**
+     * Méthode permettant d'inscrire un {@link Client} dans la base de données
+     * 
+     * @param cli {@link Client} représentant le client à inscrire dans la base
+     * de données
+     */
     public static void inscrireClient(Client cli) {
-        //On crée l'objet Personne correspondant directement dans l'IHM (le main)
-        //On vérifie si l'entity manager est ouvert
         JpaUTIL.creerEntityManager();
-        //On commence une transaction
         JpaUTIL.ouvrirTransaction();
         
         LatLng coord = calculerCoords(cli.getAdresse());
@@ -108,20 +108,21 @@ public class Service {
         
         boolean mailValide = verifierValiditeMail(cli.getMail());
         
-        //On rend l'objet persistant
         PersonneDAO.persistClient(cli);
-        //On commit la transaction
         
+        String prenom = cli.getPrenom();
+        String lePrenom = prenom.substring(0,1).toUpperCase() 
+                + prenom.substring(0, prenom.length()).toLowerCase();
         
-        if (mailValide){
-            System.out.println("Bonjour " + cli.getPrenom() + ",\r\n"
+        if (mailValide && coord != null){
+            System.out.println("Bonjour " + lePrenom + ",\r\n"
                     + "Nous vous confirmons votre inscription"
                     + " au service PROACT'IF. Votre numéro de client"
                     + " est : " + cli.getId());
             JpaUTIL.validerTransaction();
         }
         else {
-            System.out.println("Bonjour " + cli.getPrenom() + ",\r\n"
+            System.out.println("Bonjour " + lePrenom + ",\r\n"
                     + "Votre inscription au service PROACT'IF a "
                     + "malencontreusement échoué... Merci de recommencer"
                     + " ultérieurement.");
@@ -130,59 +131,78 @@ public class Service {
         JpaUTIL.fermerEntityManager();
     }
     
-    public static LatLng calculerCoords(String adresse){
+    /**
+     * Méthode permettant de calculer les coordonnées GPS d'une adresse passée 
+     * en paramètre
+     * 
+     * @param adresse {@link String} représentant l'adresse dont on
+     * souhaite calculée les coordonnées GPS
+     * 
+     * @return {@link LatLng} les coordonnées GPS de l'adresse passée en 
+     * paramètre
+     */
+    private static LatLng calculerCoords(String adresse){
         return GeoTest.getLatLng(adresse);
     }
     
+    /**
+     * Méthode permettant de vérifier la validité d'une adresse e-mail passée
+     * en paramètre.
+     * Une adresse e-mail est valide si elle n'est pas déja utilisée par un 
+     * {@link Client} inscrit dans la base de données
+     * 
+     * @param mail {@link String} représentant l'adresse e-mail de la personne
+     * 
+     * @return {@link boolean} true si le mail est valide, false sinon
+     */
     private static boolean verifierValiditeMail(String mail){
-       //TODO
-       // Verifier qu'elle n'existe pas deja dans la bdd 
-       // 2 sol : comaparer avec tous les e-mails ou faire une requete
-       // avec une condition sur le mail et si aucun resultat alors
-       // l'e-mail est valide
-       // Coder la fonction JPQL dans Personne DAO
-        
         List<Personne> listePers = PersonneDAO.verifierDoublonEmail(mail);
         return listePers.isEmpty();
     }
     
-    /*public static void afficherPersonnesPersistantes(){
-        Query query = JpaUTIL.obtenirEntityManager().createQuery("SELECT p FROM Personne p");
-        List<Personne> res = (List<Personne>)query.getResultList();
-        for (Iterator<Personne> it = res.iterator(); it.hasNext();){
-            Personne tmp = it.next();
-            System.out.println(tmp);
-        }
-    }*/
-    
+    /**
+     * Méthode permettant de connecter une {@link Personne} : un {@link Client}
+     * ou un {@link Employe} sur le site PROACT'IF grâce à ses identifiants 
+     * (e-mail et mot de passe).
+     * Pour un succés de connexion, l'adresse e-mail et le mot de passe doivent 
+     * correspondre à une {@link Personne} déja inscrite dans la base de données
+     * 
+     * @param mail {@link String} représentant l'adresse e-mail de la personne
+     * @param mdp {@link String} représentant le mot de passe de la personne
+     * 
+     * @return {@link Personne} la personne si le mail et le mot de passe sont
+     * corrects, sinon renvoie null
+     */
     public static Personne seConnecter (String mail, String mdp) {
-        //TODO
-        // Idée : Comparer avec tous les pseudo de la base (e-mail ici) et voir 
-        // s'il existe déja. Si oui --> verifier que le mot de passe est le même
-        // Retourne true si le mail et le mot de passe correspond sinon retourne false
-        
-        //On vérifie si l'entity manager est ouvert
         JpaUTIL.creerEntityManager();
         
         List<Personne> pers = PersonneDAO.verifierExistencePersonne(mail, mdp);
-        
+        JpaUTIL.fermerEntityManager();
         if (pers.isEmpty()){
-            JpaUTIL.fermerEntityManager();
             return null;
         }
         else {
-            JpaUTIL.fermerEntityManager();
             return pers.get(0);
         }
     }
     
+    /**
+     * Méthode permettant de charger l'historique des demandes 
+     * d'{@link Intervention} d'un client depuis son inscription sur le site
+     * 
+     * @param cli {@link Client} représentant le client dont on souhaite
+     * récupére l'historique
+     * 
+     * @return {@link List} d'{@link Intervention} contenant toutes les 
+     * interventions que le client a demandées depuis son inscription au site
+     */
     public static List<Intervention> chargerHistorique(Client cli) {
-        //TODO
-        //On vérifie si l'entity manager est ouvert
         JpaUTIL.creerEntityManager();
         
         List<Intervention> listIntervDuClient;
         listIntervDuClient = InterventionDAO.rechercherInterventionDuClient(cli);
+        
+        // On trie la liste en comparant les dates de demandes d'interventions
         Collections.sort(listIntervDuClient, new Comparator<Intervention>() {
  
             @Override
@@ -196,31 +216,44 @@ public class Service {
         return listIntervDuClient;
     }
     
+    /**
+     * Méthode permettant d'effectuer une demande d'intervention. Cette méthode
+     * recherche les employés disponibles c'est-à-dire qui ne sont pas déja en 
+     * intervention et dont l'heure de demande d'intervention est comprises
+     * dans leur horaires de travail. En fonction des {@link Employe} disponibles, on 
+     * cherche celui dont la durée pour aller jusqu'à l'adresse du {@link Client}
+     * en vélo est la plus faible. En cas de conflit lors du commit, un rollback 
+     * est effectué et on répéte l'opération jusqu'à ce qu'un employé soit affecté
+     * ou qu'aucun employé ne soit disponible.
+     * 
+     * @param cli {@link Client} représentant le client effectuant la demande
+     * d'{@link Intervention}
+     * @param interv {@link Intervention} représentant l'intervention que le
+     * {@link Client} demande
+     * 
+     * @return {@link Intervention} l'intervention si un {@link Employe} a été 
+     * affectée, sinon null
+     */
     public static Intervention demanderIntervention (Client cli, Intervention interv) {
-        // On met pas le client dans le constructeur de Intervention, on l'affecte
-        // Permet d'ajouter l'intervention dans la base 
         JpaUTIL.creerEntityManager();
         JpaUTIL.ouvrirTransaction();
         
         Intervention intervention = InterventionDAO.merge(interv);
         
-        // On recherche les employes dispo (voir condition dans DAO)
         Date heureIntervention = new Date();
         
-        // Gérer la distance et aussi trier par employe les plus proches !
-        // attention ... stepvpar par défaut que je m'en fou mais pour google maps teste la possibilité de gérer les escales
-        System.out.println(heureIntervention.getHours());
         List<Employe> listEmployeDispo = new ArrayList<>();
         try {
             listEmployeDispo = PersonneDAO.rechercherEmployeDisponible(heureIntervention.getHours());
         }
         catch (Exception e){
-            System.out.println("Aucun employe dispo");
+            System.err.println(e);
         }
+        
         Double duration = 100000000000.0;
         int indiceEmpLePlusProche=0;
-        
         boolean success = false;
+        
         if (listEmployeDispo.isEmpty()){
             JpaUTIL.fermerEntityManager();
             return null;
@@ -242,20 +275,17 @@ public class Service {
                 intervention.setEmploye(emp);
                 intervention.setDistance(laDistance);
                 intervention.setHorodate(heureIntervention);
-                /*Client client = PersonneDAO.mergeClient(cli);
-                client.addInterventions(intervention);*/
+                
                 try {
                     InterventionDAO.persist(intervention);
                     PersonneDAO.persistEmploye(emp);
-                    //PersonneDAO.persistClient(client);
-                    
                     JpaUTIL.validerTransaction();
                     success = true;
                 } catch (RollbackException e){
-                    // rollback et verifier qu'il reste des employés dispo
-                    // Rafrachir la liste des employes au cas ou d'autres se serait rendu dispo
-                    success = false;
                     JpaUTIL.annulerTransaction();
+                    /* On recherche de nouveau les employés disponibles au cas 
+                        où un employé serait devenue disponible depuis la 
+                        dernière recherche*/
                     listEmployeDispo = PersonneDAO.rechercherEmployeDisponible(heureIntervention.getHours());
                 }
             }
@@ -271,8 +301,15 @@ public class Service {
         }
     }
     
+    /**
+     * Méthode permettant d'avertir l'employé qu'il a été affecté à une nouvelle
+     * mission. On lui fournit les données de l'{@link Intervention} nécessaires
+     * à sa réalisation.
+     * 
+     * @param inter {@link Intervention} représentant l'intervention à laquelle
+     * l'employé a été affecté
+     */
     public static void avertirEmployeNouvelleIntervention (Intervention inter) {
-        //TODO
         Personne cli = PersonneDAO.findPersonneByIndex(inter.getClient().getId());
         
         String typeIntervention = inter.getClass().toString().split(" ")[1];
@@ -281,18 +318,37 @@ public class Service {
         SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd HH:mm");
         String laDate = sf.format(inter.getHorodate());
         
+        String prenom = cli.getPrenom();
+        String lePrenom = prenom.substring(0,1).toUpperCase() + prenom.substring(1, prenom.length()).toLowerCase();
+        
+        String nom = cli.getNom();
+        String leNom = nom.substring(0,1).toUpperCase() + nom.substring(1, nom.length()).toLowerCase();
+        
+        double laDistance = inter.getDistance();
+        DecimalFormat df = new DecimalFormat("0.00");
+        
         System.out.println("Intervention " + type + " demandée le "
-                + laDate + " pour " + cli.getPrenom() + " " 
-                + cli.getNom() + " " + "(#" + cli.getId() + "), " 
-                + cli.getAdresse() + " (" + inter.getDistance() + " km)" + " : " + inter.getDescription());
+                + laDate + " pour " + lePrenom + " " 
+                + leNom + " " + "(#" + cli.getId() + "), " 
+                + cli.getAdresse() + " (" + df.format(laDistance) + " km)" + " : " + inter.getDescription());
     }
     
+    /**
+     * Méthode permettant de confirmer la fin d'une {@link Intervention}. 
+     * 
+     * @param interv {@link Intervention} représentant l'intervention finie
+     * @param etat {@link String} représentant l'état de l'intervention
+     * c'est-à-dire si elle s'est terminée sans problèmes : 'Terminée' ou 
+     * non : 'Problème'.
+     * @param commentaireEmp {@link String} représentant le commentaire de 
+     * l'employé sur la réalisation de l'intervention
+     * 
+     * @return {@link Intervention} l'intervention avec les attributs modifiées
+     */
     public static Intervention confirmerFinIntervention (Intervention interv, String etat, String commentaireEmp){
-        //TODO
-        
         JpaUTIL.creerEntityManager();
         JpaUTIL.ouvrirTransaction();
-        // On récupére les infos
+        
         Intervention intervention = InterventionDAO.merge(interv);
         Employe employe = PersonneDAO.mergeEmploye(intervention.getEmploye());
         
@@ -305,7 +361,6 @@ public class Service {
         
         employe.setDisponibilite(true);
         
-        // On persist et valide (pour l'instant)
         InterventionDAO.persist(intervention);
         PersonneDAO.persistEmploye(employe);
         
@@ -316,20 +371,39 @@ public class Service {
         return intervention;
     }
     
+    /**
+     * Méthode permettant d'avertir le client que l'{@link Intervention} qu'il
+     * a demandée a été réalisée
+     * 
+     * @param intervention {@link Intervention} représentant l'intervention
+     * demandée par le client dont l'{@link Employe} a confirmé la fin
+     */
     private static void avertirClientFinIntervention (Intervention intervention) {
         
         SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd");
         SimpleDateFormat sf2 = new SimpleDateFormat("HH:mm");
+        
         String laDate = sf.format(intervention.getHeureFin());
         String heureDeFin = sf2.format(intervention.getHeureFin());
         
-        System.out.println("L'intervention a été effectuée à " + laDate
-            + ".\r\n Etat de l'intervention : " + intervention.getEtat());
+        System.out.println("L'intervention a été effectuée le " + laDate
+            + " à " + heureDeFin + ".\r\n Etat de l'intervention : " + intervention.getEtat());
         if (!intervention.getCommentaireEmp().equals("")){
             System.out.println("Commentaire de l'employé : " + intervention.getCommentaireEmp() + "\r\n");
         }
     }
     
+    /**
+     * Méthode permettant de consulter l'ensemble des {@link Intervention} du 
+     * jour réalisées par un {@link Employe}
+     * 
+     * @param emp {@link Employe} représentant l'employé dont on souhaite
+     * consulté les {@link Intervention} du jour
+     * 
+     * @return {@link List} d'{@link Intervention} qui contient l'ensemble des
+     * interventions du jour réalisées par l'employé. Si il n'en a réalisé 
+     * aucune, retourne une liste vide.
+     */
     public static List<Intervention> consulterOpeDuJour (Employe emp) {
         
         JpaUTIL.creerEntityManager();
@@ -350,9 +424,19 @@ public class Service {
         return listInterv;
     }
 
+    /**
+     * Méthode permettant de récupérer tous les clients inscrits dans la base
+     * de données. 
+     * 
+     * @return {@link List} de {@link Client] contenant tous les clients 
+     * inscrits dans la base de données
+     */
     public static List<Client> recupererInfosClients() {
+        
         JpaUTIL.creerEntityManager();
+        
         List<Client> lesClients = PersonneDAO.recupererTousLesClients();
+        
         JpaUTIL.fermerEntityManager();
         return lesClients;
     }

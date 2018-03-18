@@ -9,7 +9,8 @@ import java.text.SimpleDateFormat;
 import javax.persistence.Entity;
 
 /**
- * Objet métier Animal. Classe héritant de l'objet métier {@link Intervention}.
+ * Objet métier Animal. Classe persistante héritant de l'objet métier
+ * {@link Intervention}.
  * Objet métier qui définit une intervention concernant un animal
  * 
  * @author Christophe Etienne
@@ -19,24 +20,25 @@ import javax.persistence.Entity;
 public class Animal extends Intervention{
     
     /**
-     * {@link String} Indique le type d'animal concerné par l'intervention
+     * {@link String} indiquant le type d'animal concerné par l'intervention
      */
     private String typeAnimal;
     
     /**
-     * Constructeur par défaut
+     * Constructeur par défaut de l'objet métier Animal
      */
     public Animal() {
     }
 
     /**
-     * Constructeur paramétré qui fait appel au constructeur de la classe mère
+     * Constructeur paramétré qui fait appel au constructeur de la classe parente
      * {@link Intervention} et initialise l'attribut typeAnimal avec la chaîne 
      * de caractère passée en paramètre
      * 
-     * @param description {@link String} la description de l'intervention
-     * @param unTypeAnimal {@link String} le type d'animal concerné par 
-     * l'{@link Intervention}
+     * @param description {@link String} représentant la description
+     * de l'intervention
+     * @param unTypeAnimal {@link String} représentant le type d'animal 
+     * concerné par l'{@link Intervention}
      */
     public Animal(String description, String unTypeAnimal) {
         super(description);
@@ -44,6 +46,8 @@ public class Animal extends Intervention{
     }
 
     /**
+     * Méthode permettant d'obtenir le type de l'animal concerné par une
+     * {@link Intervention}
      * 
      * @return {@link String} le type d'animal concernée par 
      * l'{@link Intervention}
@@ -53,10 +57,10 @@ public class Animal extends Intervention{
     }
 
     /**
-     * Affecte à l'attribut typeAnimal le type d'animal concernée 
-     * par l'{@link Intervention}
+     * Méthode permettant d'affecter le type d'un animal à une 
+     * {@link Intervention} de type Animal
      * 
-     * @param typeAnimal {@ String} le type de l'animal
+     * @param typeAnimal {@ String} représentant le type de l'animal
      */
     public void setTypeAnimal(String typeAnimal) {
         this.typeAnimal = typeAnimal;

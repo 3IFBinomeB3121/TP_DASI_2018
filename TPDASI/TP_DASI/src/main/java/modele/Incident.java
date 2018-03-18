@@ -6,20 +6,32 @@
 package modele;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.Date;
 import javax.persistence.Entity;
 
 /**
- *
- * @author William
+ * Objet métier Incident. Classe persistante héritant de l'objet métier
+ * {@link Intervention}.
+ * Objet métier qui définit une intervention concernant un incident
+ * 
+ * @author Christophe Etienne
+ * @author William Occelli
  */
 @Entity
 public class Incident extends Intervention {
 
+    /**
+     * Constructeur par défaut de l'objet métier Incident
+     */
     public Incident() {
     }
 
+    /**
+     * Constructeur paramétré qui fait appel au constructeur de la classe parente
+     * {@link Intervention}
+     * 
+     * @param description {@link String} représentant la description
+     * de l'intervention
+     */
     public Incident(String description) {
         super(description);
     }

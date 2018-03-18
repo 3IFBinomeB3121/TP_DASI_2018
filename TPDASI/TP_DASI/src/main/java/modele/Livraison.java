@@ -6,47 +6,93 @@
 package modele;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import javax.persistence.Entity;
 
 /**
- *
- * @author William
+ * Objet métier Livraison. Classe persistante héritant de l'objet métier 
+ * {@link Intervention}.
+ * Objet métier qui définit une intervention concernant une livraison.
+ * 
+ * @author Christophe Etienne
+ * @author William Occelli
  */
 @Entity
 public class Livraison extends Intervention{
     
+    /**
+     * {@link String} indiquant l'objet à receptionné
+     */
     private String objet;
+    
+    /**
+     * {@link String} indiquant l'entreprise effectuant la livraison
+     */
     private String entreprise;
 
+    /**
+     * Constructeur par défaut de l'objet métier Livraison
+     */
     public Livraison() {
     }
 
+    /**
+     * Constructeur paramétré qui fait appel au constructeur de la classe parente
+     * {@link Intervention} et initialise les attributs 'objet' et 'entreprise' 
+     * 
+     * @param objet {@link String} représentant l'objet à receptionné
+     * @param entreprise {@link String} représentant l'entreprise effectuant
+     * la livraison
+     * @param description {@link String} représentant la description
+     * de l'intervention
+     */
     public Livraison(String objet, String entreprise, String description) {
         super(description);
         this.objet = objet;
         this.entreprise = entreprise;
     }
 
+    /**
+     * Méthode permettant d'obtenir un objet d'une {@link Intervention}
+     * 
+     * @return {@link String} l'objet concerné par l'{@link Intervention}
+     */
     public String getObjet() {
         return objet;
     }
 
+    /**
+     * Méthode permettant d'affecter un objet à une {@link Intervention}
+     * @param objet 
+     */
     public void setObjet(String objet) {
         this.objet = objet;
     }
 
+    /**
+     * Méthode permettant d'obtenir une entreprise effectuant la livraison d'une
+     * {@link Intervention}
+     * 
+     * @return {@link String} l'entreprise effectuant la livraison
+     */
     public String getEntreprise() {
         return entreprise;
     }
 
+    /**
+     * Méthode permettant d'affecter une entreprise effectuant une livraison
+     * pour une {@link Intervention}
+     * 
+     * @param entreprise {@link String} représentant l'entreprise effectuant la
+     * livraison pour l'{@link Intervention}
+     */
     public void setEntreprise(String entreprise) {
         this.entreprise = entreprise;
     }
 
     /**
      * Redéfinition de la méthode {@link toString()}
-     * Affiche toutes les informations concernant l'intervention de type Livraison
+     * Affiche toutes les informations concernant l'intervention de 
+     * type Livraison
      * 
      * @return {@link String} une chaîne de caractère contenant toutes les 
      * informations de l'{@link Intervention} de type Livraison
