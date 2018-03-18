@@ -5,6 +5,7 @@
  */
 package modele;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
@@ -60,7 +61,9 @@ public class Employe extends Personne {
 
     @Override
     public String toString() {
-        return "Employe{ id= " + id + "  civilite=" + civilite + ", nom=" + nom + ", prenom=" + prenom + ", dateNaissance=" + dateNaissance + ", adresse=" + adresse + ", mail=" + mail + ", coords=" + coords + ", motdepasse=" + motdepasse + /*", interventions=" + interventions +*/ "disponibilite=" + disponibilite + ", heureDebutDispo=" + heureDebutDispo + ", heureFinDispo=" + heureFinDispo + ", version=" + version + '}';
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd");
+        String laDate = sf.format(dateNaissance);
+        return "Employe{ id= " + id + "  civilite=" + civilite + ", nom=" + nom + ", prenom=" + prenom + ", dateNaissance=" + laDate + ", adresse=" + adresse + ", mail=" + mail + ", coords=" + coords + ", motdepasse=" + motdepasse + ", disponibilite=" + disponibilite + ", heureDebutDispo=" + heureDebutDispo + ", heureFinDispo=" + heureFinDispo + ", version=" + version + '}';
     }
     
     

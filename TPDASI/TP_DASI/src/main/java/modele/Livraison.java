@@ -5,6 +5,7 @@
  */
 package modele;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Entity;
 
@@ -45,7 +46,9 @@ public class Livraison extends Intervention{
 
     @Override
     public String toString() {
-        return "Livraison{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe +", distancet=" + distance + ", objet=" + objet + ", entreprise=" + entreprise + '}';
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd HH:mm");
+        String laDate = sf.format(horodate);
+        return "Livraison{" + "id=" + id + ", description=" + description + ", horodate=" + laDate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe +", distancet=" + distance + ", objet=" + objet + ", entreprise=" + entreprise + '}';
     }
     
     

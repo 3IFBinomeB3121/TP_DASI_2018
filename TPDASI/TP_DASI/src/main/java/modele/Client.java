@@ -5,6 +5,7 @@
  */
 package modele;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Entity;
 
@@ -24,7 +25,9 @@ public class Client extends Personne {
 
     @Override
     public String toString() {
-        return "Client{id=" + id + ", civilite=" + civilite + ", nom=" + nom + ", prenom=" + prenom + ", dateNaissance=" + dateNaissance + ", adresse=" + adresse + ", mail=" + mail + ", coords=" + coords + ", motdepasse=" + motdepasse + ", interventions=" + /*interventions +*/"}";
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd");
+        String laDate = sf.format(dateNaissance);
+        return "Client{id=" + id + ", civilite=" + civilite + ", nom=" + nom + ", prenom=" + prenom + ", dateNaissance=" + laDate + ", adresse=" + adresse + ", mail=" + mail + ", coords=" + coords + ", motdepasse=" + motdepasse + "}";
     }
 
     

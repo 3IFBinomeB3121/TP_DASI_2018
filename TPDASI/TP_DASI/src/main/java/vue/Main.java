@@ -137,9 +137,9 @@ public class Main {
         Intervention intervention2fini = Service.confirmerFinIntervention(intervention2, "Terminée", "");
         Intervention intervention3fini = Service.confirmerFinIntervention(intervention3, "Terminée", "Colis réceptionné et déposé chez la voisine d'en face");
         
-        System.out.println(intervention1fini.toString() + "\r\n");
-        System.out.println(intervention2.toString() + "\r\n");
-        System.out.println(intervention3fini.toString() + "\r\n");
+        System.out.println(intervention1fini.toString());
+        System.out.println(intervention2fini.toString());
+        System.out.println(intervention3fini.toString());
         
         Saisie.pause();
         

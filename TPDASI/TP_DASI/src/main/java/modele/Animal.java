@@ -5,7 +5,7 @@
  */
 package modele;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
 import javax.persistence.Entity;
 
 /**
@@ -35,6 +35,8 @@ public class Animal extends Intervention{
 
     @Override
     public String toString() {
-        return "Animal{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe + "}" + "typeAnimal=" + typeAnimal + ", distance=" + distance + "}";
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd HH:mm");
+        String laDate = sf.format(horodate);
+        return "Animal{" + "id=" + id + ", description=" + description + ", horodate=" + laDate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe + "}" + "typeAnimal=" + typeAnimal + ", distance=" + distance + "}";
     }
 }

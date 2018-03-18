@@ -82,8 +82,8 @@ public class InterventionDAO {
         Query query = em.createQuery("SELECT i FROM Intervention i WHERE"
                 + " i.horodate >=:aujourdhui AND i.horodate<=:demain AND i.employe = :emp"); 
         query.setParameter("aujourdhui", today.getTime());
-        query.setParameter("aujourdhui", tomorrow.getTime());
-        query.setParameter("idDeEmp", emp.getId());
+        query.setParameter("demain", tomorrow.getTime());
+        query.setParameter("emp", emp);
         listIntervention = query.getResultList();
         return listIntervention;
     }

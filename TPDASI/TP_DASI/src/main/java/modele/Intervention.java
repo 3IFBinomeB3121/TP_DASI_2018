@@ -6,6 +6,7 @@
 package modele;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -53,6 +54,10 @@ public abstract class Intervention implements Serializable {
     public Intervention(String description) {
         this.description = description;
         this.estFini = false;
+    }
+
+    public Long getId() {
+        return id;
     }
     
     public Employe getEmploye() {
@@ -129,11 +134,9 @@ public abstract class Intervention implements Serializable {
 
     @Override
     public String toString() {
-        return "Intervention{" + "id=" + id + ", description=" + description + ", horodate=" + horodate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe + ", distance=" + distance + '}';
-    }
-
-    public boolean getId() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd HH:mm");
+        String laDate = sf.format(horodate);
+        return "Intervention{" + "id=" + id + ", description=" + description + ", horodate=" + laDate + ", estFini=" + estFini + ", etat=" + etat + ", heureFin=" + heureFin + ", commentaireEmp=" + commentaireEmp + ", client=" + client + ", employe=" + employe + ", distance=" + distance + '}';
     }
     
 }

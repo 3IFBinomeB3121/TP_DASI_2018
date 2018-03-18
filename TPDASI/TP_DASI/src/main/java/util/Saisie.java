@@ -55,7 +55,7 @@ public class Saisie {
     }
     
     public static void pause() {
-        lireChaine("--PAUSE--");
+        lireChaine("--PAUSE--\r\n");
     }
 
     public static void main(String[] args) {

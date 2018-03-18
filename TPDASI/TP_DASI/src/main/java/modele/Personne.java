@@ -7,6 +7,7 @@ package modele;
 
 import com.google.maps.model.LatLng;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -164,7 +165,9 @@ public abstract class Personne implements Serializable {
 
     @Override
     public String toString() {
-        return "Personne{" + "id=" + id + ", civilite=" + civilite + ", nom=" + nom + ", prenom=" + prenom + ", dateNaissance=" + dateNaissance + ", adresse=" + adresse + ", mail=" + mail + ", coords=" + coords + ", motdepasse=" + motdepasse + ", interventions=" + /*interventions +*/ '}';
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd");
+        String laDate = sf.format(dateNaissance);
+        return "Personne{" + "id=" + id + ", civilite=" + civilite + ", nom=" + nom + ", prenom=" + prenom + ", dateNaissance=" + laDate + ", adresse=" + adresse + ", mail=" + mail + ", coords=" + coords + ", motdepasse=" + motdepasse + '}';
     }
 
 }

@@ -1,9 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package service;
+
+/**
+ * Service est la classe représentant 
+ * 
+ * @author Christophe Etienne
+ * @author William Occelli
+ * @version 1.0
+ */
 
 import com.google.maps.model.LatLng;
 import com.google.maps.model.TravelMode;
@@ -183,7 +187,7 @@ public class Service {
  
             @Override
             public int compare(Intervention i1, Intervention i2) {
-                return i1.getHorodate().compareTo(i2.getHorodate());
+                return i2.getHorodate().compareTo(i1.getHorodate());
             }
             
         });
@@ -314,13 +318,15 @@ public class Service {
     
     private static void avertirClientFinIntervention (Intervention intervention) {
         
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd HH:mm");
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd");
+        SimpleDateFormat sf2 = new SimpleDateFormat("HH:mm");
         String laDate = sf.format(intervention.getHeureFin());
+        String heureDeFin = sf2.format(intervention.getHeureFin());
         
         System.out.println("L'intervention a été effectuée à " + laDate
-            + ".\r\n Etat de l'intervention : " + intervention.getEtat() + "\r\n");
+            + ".\r\n Etat de l'intervention : " + intervention.getEtat());
         if (!intervention.getCommentaireEmp().equals("")){
-            System.out.println("Commentaire de l'employé : " + intervention.getCommentaireEmp());
+            System.out.println("Commentaire de l'employé : " + intervention.getCommentaireEmp() + "\r\n");
         }
     }
     
@@ -343,36 +349,6 @@ public class Service {
         JpaUTIL.fermerEntityManager();
         return listInterv;
     }
-    
-    /*
-    public static List<Intervention> AfficherOpeFiltreJour (Employe emp, Date filtreDate) {
-        //TODO
-        //On vérifie si l'entity manager est ouvert
-        JpaUTIL.creerEntityManager();
-        JpaUTIL.ouvrirTransaction();
-        
-        //int jour = today.getDayOfYear();
-        ArrayList<Intervention> listInterv; // Verifier s'il ne faut pas faire un new
-        listInterv = (ArrayList<Intervention>) InterventionDAO.RechercherInterventionParHorodateEmploye(emp.getId(), filtreDate);
-        JpaUTIL.validerTransaction();
-        JpaUTIL.fermerEntityManager();
-        return listInterv;
-    }
-    
-    
-    
-    // Ne pas multiplier les méthodes, une avec plusieurs parametres si on fait les filtres
-    public static List<Intervention> AfficherHistoriqueFiltreDate(Client cli){
-        JpaUTIL.creerEntityManager();
-        
-        Date today = new Date();
-        List<Intervention> listInterv;
-        listInterv = InterventionDAO.RechercherInterventionParHorodateClient(cli.getId(), today);
-        
-        JpaUTIL.fermerEntityManager();
-        return listInterv;
-    }
-    */
 
     public static List<Client> recupererInfosClients() {
         JpaUTIL.creerEntityManager();
