@@ -147,7 +147,7 @@ public class Employe extends Personne {
         SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd");
         String laDate = sf.format(dateNaissance);
         String lePrenom = prenom.substring(0,1).toUpperCase() 
-                + prenom.substring(0, prenom.length()).toLowerCase();
+                + prenom.substring(1, prenom.length()).toLowerCase();
         String leNom = nom.substring(0,1).toUpperCase() 
                 + nom.substring(1, nom.length()).toLowerCase();
         return "Employe{ id= " + id + "  civilite=" + civilite 

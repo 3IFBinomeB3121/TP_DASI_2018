@@ -63,7 +63,115 @@ public class Main {
         //      - Découper le code en petites méthodes ? 
         
         // Test de inscrireClient
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy");
+        Integer scenario = Saisie.lireInteger("Quel scenario voulez-vous "
+                + "jouer ?\r\n 1 : Client\r\n 2 : Employé\r\n 3 : Client "
+                + "erreur de connexion\r\n 4 : Demande d'intervention "
+                + "sans employé disponible");
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        Date laDateDeNaissance = new Date();
+        switch (scenario){
+            case 1:
+                Integer membre = 0;
+                Client connexionClient = null;
+                while (membre != 1 && membre != 2){
+                    membre = Saisie.lireInteger("Etes-vous deja membre du "
+                            + "site ? \r\n 1 : oui\r\n 2 : non");
+                }
+                if (membre == 2){
+                    String civilite = Saisie.lireChaine("Entrer votre civilité");
+                    String nom = Saisie.lireChaine("Entrer votre nom");
+                    String prenom = Saisie.lireChaine("Entre votre prenom");
+                    String dateDeNaissance = Saisie.lireChaine("Entrer votre"
+                            + "date de naissance sous la forme 'dd-MM-yyyy'");
+                    try {
+                        laDateDeNaissance = sdf.parse(dateDeNaissance);
+                    } catch (ParseException ex) {
+                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    String mailDuClient = Saisie.lireChaine("Entrer votre mail");
+                    String numero = Saisie.lireChaine("Entrer votre numéro");
+                    String adresse = Saisie.lireChaine("Entrer votre adresse (Ex: 1900 route de Vins, 83143, LE VAL)");
+                    String mdpClient = Saisie.lireChaine("Votre mot de passe : ");
+                    connexionClient = new Client(civilite, nom, prenom, laDateDeNaissance, adresse, mailDuClient, numero, mdpClient);
+                    Client inscriptionClient = Service.inscrireClient(connexionClient);
+                    System.out.println(inscriptionClient.toString());
+                }
+                else{
+                    String emailClientInscrit = "";
+                    String mdpClientInscrit = "";
+                    while (connexionClient == null){
+                        emailClientInscrit = Saisie.lireChaine("Entre votre e-mail");
+                        mdpClientInscrit = Saisie.lireChaine("Entre votre mot de passe");
+                        connexionClient = (Client) Service.seConnecter(emailClientInscrit, mdpClientInscrit);
+                        if (connexionClient == null){
+                            System.out.println("Le mail ou mot de passe rentré n'est pas valide."); 
+                        }
+                    }
+                    System.out.println("Affichage des informations du Client : ");
+                    System.out.println(connexionClient.toString());
+                    Saisie.pause();
+                    chargerHistoriqueClient(connexionClient);
+                    Saisie.pause();
+                }
+                Integer demanderIntervention = 0;
+                while (demanderIntervention != 1 && demanderIntervention != 2){
+                    demanderIntervention = Saisie.lireInteger("Demander une intervention ? \r\n1 : Oui    2 : Non");
+                }
+                if (demanderIntervention == 1){
+                    Integer typeInterventionDemandee = 0;
+                    while (typeInterventionDemandee != 1 && typeInterventionDemandee != 2 && typeInterventionDemandee != 3){
+                        typeInterventionDemandee = Saisie.lireInteger("Quelle type d'intervention ?"
+                            + "\r\n1 : Incident\r\n2 : Animal\r\n3 : Livraison");
+                    }
+                    String descriptionIntervention = Saisie.lireChaine("Commentaire sur l'intervention :");
+                    String infoSup = "";
+                    String entreprise = "";
+                    if (typeInterventionDemandee == 2){
+                        infoSup = Saisie.lireChaine("Quel type d'animal?");
+                        Animal interAnimal = new Animal(descriptionIntervention, infoSup);
+                        Intervention intAnimal = Service.demanderIntervention(connexionClient, interAnimal);
+                        Saisie.pause();
+                        Intervention etatInterAni = Service.confirmerFinIntervention(intAnimal, "Terminée", "Résolu sans problème");
+                        Saisie.pause();
+                        System.out.println("Affichage des infos de l'intervention :\r\n" 
+                                + etatInterAni.toString());
+                        Saisie.pause();
+                    }
+                    else if (typeInterventionDemandee == 3){
+                        infoSup = Saisie.lireChaine("Quel objet allez-vous vous faire livrez ?");
+                        entreprise = Saisie.lireChaine("Par quelle entreprise ?");
+                        Livraison interLivraison = new Livraison(descriptionIntervention, infoSup, entreprise);
+                        Intervention intLivraison = Service.demanderIntervention(connexionClient, interLivraison);
+                        Saisie.pause();
+                        Intervention etatInterLiv = Service.confirmerFinIntervention(intLivraison, "Terminée", "Résolu sans problème");
+                        Saisie.pause();
+                        System.out.println("Affichage des infos de l'intervention :\r\n" 
+                                + etatInterLiv.toString());
+                        Saisie.pause();
+                    }
+                    Incident interIncident = new Incident(descriptionIntervention);
+                    Intervention intIncident = Service.demanderIntervention(connexionClient, interIncident);
+                    Saisie.pause();
+                    Intervention etatInterInci = Service.confirmerFinIntervention(intIncident, "Terminée", "Résolu sans problème");
+                    Saisie.pause();
+                    System.out.println("Affichage des infos de l'intervention :\r\n" 
+                            + etatInterInci.toString());
+                    Saisie.pause();
+                    chargerHistoriqueClient(connexionClient);
+                    Saisie.pause();
+                }
+                Saisie.pause();
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            default:
+        }
+        
         String date = "12-05-1982";
         Date d1 = new Date();
         try {
@@ -71,6 +179,10 @@ public class Main {
         } catch (ParseException pe){
             System.out.println("erreur pour parser la date");
         }
+        
+        
+        /*
+        String leMailClient = Saisie.lireChaine("Entrer votre adresse mail");
         
         Client cli = new Client("Monsieur", "Jackson", "Michael", d1, "1900 route de Vins, 83143, LE VAL", "chris@hotmail.fr", "0630276677", "coucou");
         Client cli2 = new Client("Madame", "Carlita", "Josette", d1, "5 Rue Léon Fabre, Villeurbanne", "carlita.Josette@hotmail.fr", "0630276677", "carli");
@@ -194,9 +306,27 @@ public class Main {
             numeroInter++;
         }
         
-        Saisie.pause();
+        Saisie.pause();*/
         
         JpaUTIL.destroy();
     }
     
+    public static void chargerHistoriqueClient(Client cli){
+        List<Intervention> historiqueDuClient = Service.chargerHistorique(cli);
+        int numeroInterventionClient = 1;
+        if (!historiqueDuClient.isEmpty()){
+            for (Intervention intervention: historiqueDuClient){
+                System.out.println("Intervention numéro " 
+                        + numeroInterventionClient + " :\r\n");
+                System.out.println(intervention.toString() + "\r\n");
+                numeroInterventionClient++;
+            }
+        }
+        else{
+            System.out.println("Vous n'avez jamais fait de demande d'intervention");
+        }
+    }
+    
 }
+
+

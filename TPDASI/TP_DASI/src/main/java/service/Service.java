@@ -89,7 +89,13 @@ public class Service {
         PersonneDAO.persistEmploye(emp5);
         PersonneDAO.persistEmploye(emp6);
         //On commit la transaction
-        JpaUTIL.validerTransaction();
+        try{
+            JpaUTIL.validerTransaction();
+        }catch(RollbackException e){
+            JpaUTIL.annulerTransaction();
+            JpaUTIL.fermerEntityManager();
+            throw e;
+        }
         JpaUTIL.fermerEntityManager();
     }
     
@@ -98,8 +104,10 @@ public class Service {
      * 
      * @param cli {@link Client} représentant le client à inscrire dans la base
      * de données
+     * @return {@Client} le client inscrit ou bien null si l'inscription
+     * ne s'est pas passé correctement (e-mail déja présent dans la base)
      */
-    public static void inscrireClient(Client cli) {
+    public static Client inscrireClient(Client cli) {
         JpaUTIL.creerEntityManager();
         JpaUTIL.ouvrirTransaction();
         
@@ -112,14 +120,22 @@ public class Service {
         
         String prenom = cli.getPrenom();
         String lePrenom = prenom.substring(0,1).toUpperCase() 
-                + prenom.substring(0, prenom.length()).toLowerCase();
+                + prenom.substring(1, prenom.length()).toLowerCase();
         
         if (mailValide && coord != null){
             System.out.println("Bonjour " + lePrenom + ",\r\n"
                     + "Nous vous confirmons votre inscription"
                     + " au service PROACT'IF. Votre numéro de client"
                     + " est : " + cli.getId());
-            JpaUTIL.validerTransaction();
+            try{
+                JpaUTIL.validerTransaction();
+                JpaUTIL.fermerEntityManager();
+                return cli;
+            }catch (RollbackException e){
+                JpaUTIL.annulerTransaction();
+                JpaUTIL.fermerEntityManager();
+                throw e;
+            }
         }
         else {
             System.out.println("Bonjour " + lePrenom + ",\r\n"
@@ -127,8 +143,10 @@ public class Service {
                     + "malencontreusement échoué... Merci de recommencer"
                     + " ultérieurement.");
             JpaUTIL.annulerTransaction();
+            JpaUTIL.fermerEntityManager();
+            return null;
         }
-        JpaUTIL.fermerEntityManager();
+        
     }
     
     /**
@@ -219,7 +237,7 @@ public class Service {
     /**
      * Méthode permettant d'effectuer une demande d'intervention. Cette méthode
      * recherche les employés disponibles c'est-à-dire qui ne sont pas déja en 
-     * intervention et dont l'heure de demande d'intervention est comprises
+     * intervention et dont l'heure de demande d'intervention est comprise
      * dans leur horaires de travail. En fonction des {@link Employe} disponibles, on 
      * cherche celui dont la durée pour aller jusqu'à l'adresse du {@link Client}
      * en vélo est la plus faible. En cas de conflit lors du commit, un rollback 
@@ -242,13 +260,7 @@ public class Service {
         
         Date heureIntervention = new Date();
         
-        List<Employe> listEmployeDispo = new ArrayList<>();
-        try {
-            listEmployeDispo = PersonneDAO.rechercherEmployeDisponible(heureIntervention.getHours());
-        }
-        catch (Exception e){
-            System.err.println(e);
-        }
+        List<Employe> listEmployeDispo = PersonneDAO.rechercherEmployeDisponible(heureIntervention.getHours());
         
         Double duration = 100000000000.0;
         int indiceEmpLePlusProche=0;
@@ -290,11 +302,13 @@ public class Service {
                 }
             }
         }
+        // Cas où on est sorti de la boucle car il n'y avait plus d'employés 
+        // disponibles
         if (listEmployeDispo.isEmpty()){
             JpaUTIL.fermerEntityManager();
             return null;
         }
-        else{
+        else{ 
             avertirEmployeNouvelleIntervention(intervention);
             JpaUTIL.fermerEntityManager();
             return intervention;
@@ -364,7 +378,13 @@ public class Service {
         InterventionDAO.persist(intervention);
         PersonneDAO.persistEmploye(employe);
         
-        JpaUTIL.validerTransaction();
+        try {
+            JpaUTIL.validerTransaction();
+        }catch (RollbackException e){
+            JpaUTIL.annulerTransaction();
+            JpaUTIL.fermerEntityManager();
+            throw e;
+        }
         JpaUTIL.fermerEntityManager();
         
         avertirClientFinIntervention(intervention);

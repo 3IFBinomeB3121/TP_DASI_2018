@@ -28,7 +28,7 @@ import javax.persistence.Temporal;
  * @author William Occelli
  */
 @Entity
-@Inheritance (strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance (strategy = InheritanceType.JOINED)
 public abstract class Intervention implements Serializable {
     
     /**

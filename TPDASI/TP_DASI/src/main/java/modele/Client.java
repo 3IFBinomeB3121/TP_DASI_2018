@@ -54,7 +54,11 @@ public class Client extends Personne {
     public String toString() {
         SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd");
         String laDate = sf.format(dateNaissance);
-        return "Client{id=" + id + ", civilite=" + civilite + ", nom=" + nom + ", prenom=" + prenom + ", dateNaissance=" + laDate + ", adresse=" + adresse + ", mail=" + mail + ", coords=" + coords + ", motdepasse=" + motdepasse + "}";
+        String lePrenom = prenom.substring(0,1).toUpperCase() 
+                + prenom.substring(1, prenom.length()).toLowerCase();
+        String leNom = nom.substring(0,1).toUpperCase() 
+                + nom.substring(1, nom.length()).toLowerCase();
+        return "Client{id=" + id + ", civilite=" + civilite + ", nom=" + leNom + ", prenom=" + lePrenom + ", dateNaissance=" + laDate + ", adresse=" + adresse + ", mail=" + mail + ", coords=" + coords + ", motdepasse=" + motdepasse + "}";
     }
 
     

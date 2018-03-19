@@ -14,7 +14,7 @@ public class Saisie {
 
     public static String lireChaine(String invite) {
         String chaineLue = null;
-        System.out.print(invite);
+        System.out.print(invite + "\r\n");
         try {
             InputStreamReader isr = new InputStreamReader(System.in);
             BufferedReader br = new BufferedReader(isr);
@@ -30,7 +30,7 @@ public class Saisie {
         Integer valeurLue = null;
         while (valeurLue == null) {
             try {
-                valeurLue = Integer.parseInt(lireChaine(invite));
+                valeurLue = Integer.parseInt(lireChaine(invite + "\r\n"));
             } catch (NumberFormatException ex) {
                 System.out.println("/!\\ Erreur de saisie - Nombre entier attendu /!\\");
             }
