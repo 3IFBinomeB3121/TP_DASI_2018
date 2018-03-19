@@ -260,7 +260,7 @@ public class Service {
         
         Date heureIntervention = new Date();
         
-        List<Employe> listEmployeDispo = PersonneDAO.rechercherEmployeDisponible(heureIntervention.getHours());
+        List<Employe> listEmployeDispo = PersonneDAO.rechercherEmployeDisponible(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
         
         Double duration = 100000000000.0;
         int indiceEmpLePlusProche=0;
@@ -459,5 +459,22 @@ public class Service {
         
         JpaUTIL.fermerEntityManager();
         return lesClients;
+    }
+
+    /**
+     * Méthode permettant de récupérer tous les employés disponibles au moment
+     * du test. Cette méthode est utilisée seulement dans le cas d'un test 
+     * pour le scénario de présentation 
+     * 
+     * @return {@link int} le nombre d'employé disponible au moment de la
+     * recherche
+     */
+    public static int recupererNbEmpDispo() {
+        JpaUTIL.creerEntityManager();
+        
+        List<Employe> lesEmployesDispo = PersonneDAO.rechercherEmployeDisponible(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+        
+        JpaUTIL.fermerEntityManager();
+        return lesEmployesDispo.size();
     }
 }

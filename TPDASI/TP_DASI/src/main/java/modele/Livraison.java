@@ -45,7 +45,7 @@ public class Livraison extends Intervention{
      * @param description {@link String} représentant la description
      * de l'intervention
      */
-    public Livraison(String objet, String entreprise, String description) {
+    public Livraison(String description, String objet, String entreprise) {
         super(description);
         this.objet = objet;
         this.entreprise = entreprise;
