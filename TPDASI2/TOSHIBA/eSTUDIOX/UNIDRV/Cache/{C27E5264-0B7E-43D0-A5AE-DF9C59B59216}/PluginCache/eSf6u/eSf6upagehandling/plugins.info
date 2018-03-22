@@ -1,0 +1,13 @@
+<PluginGroup name="pagehandling">
+    <Plugin alwayson="false" minimumDrvSupport="7.0.0.0" name="pagehandling" order="3" version="7.197.4229.2">
+        <Property name="localisedname" value="$IDS_DLG_PAPERHANDLING;" />
+        <Property name="rulefile" value="pagehandling.db" />
+        <Property name="pluginrules" value="pagehandlingplugin.db" />
+        <Property name="schemafile" value="schema_pagehandling.xml" />
+        <Library name="pagehandling.dll" />
+        <Property name="helpfile" value="chrome://base/locale/help.chm" />
+        <Property name="helpid" value="3000" />
+        <Property name="enabledByDefault" value="true" />
+        <Property name="standardplugin" value="true" />
+    </Plugin>
+</PluginGroup>

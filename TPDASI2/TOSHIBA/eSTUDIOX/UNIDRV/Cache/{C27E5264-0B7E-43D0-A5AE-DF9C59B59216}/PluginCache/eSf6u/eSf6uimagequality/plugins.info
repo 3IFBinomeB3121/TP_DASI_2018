@@ -1,0 +1,19 @@
+<PluginGroup name="imagequality">
+    <Plugin alwayson="false" minimumDrvSupport="7.0.0.0" name="imagequality" order="4" version="7.197.4229.2">
+        <Library name="imagequality.dll" />
+        <Property name="localisedname" value="$IDS_DLG_IMAGEQUALITY;" />
+        <Property name="schemafile" value="schema_imgquality.xml" />
+        <Property name="rulefile" value="imagequality.db" />
+        <Property name="pluginrules" value="iqplugin.db" />
+        <Property name="disablecheckbox" value="true" />
+        <Property name="helpfile" value="chrome://base/locale/help.chm" />
+        <Property name="helpid" value="4000" />
+        <Property name="basic_helpid" value="4100" />
+        <Property name="color_bal_helpid" value="4200" />
+        <Property name="ImageAtr_helpid" value="4300" />
+        <Property name="Advance_helpid" value="4400" />
+        <Property name="mono_color_bal_helpid" value="4500" />
+        <Property name="enabledByDefault" value="true" />
+        <Property name="standardplugin" value="true" />
+    </Plugin>
+</PluginGroup>

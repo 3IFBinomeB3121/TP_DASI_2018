@@ -1,0 +1,13 @@
+<PluginGroup name="effect">
+    <Plugin alwayson="false" minimumDrvSupport="7.0.0.0" name="effect" order="5" version="7.197.4229.2">
+        <Property name="localisedname" value="$IDS_DLG_EFFECT;" />
+        <Property name="rulefile" value="effect.db" />
+        <Property name="pluginrules" value="effectplugin.db" />
+        <Property name="schemafile" value="schema_effect.xml" />
+        <Property name="helpfile" value="chrome://base/locale/help.chm" />
+        <Property name="helpid" value="5000" />
+        <Property name="enabledByDefault" value="true" />
+        <Property name="standardplugin" value="true" />
+        <Library name="effect.dll" />
+    </Plugin>
+</PluginGroup>

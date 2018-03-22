@@ -1,0 +1,25 @@
+<PluginGroup name="base">
+    <Plugin alwayson="true" minimumDrvSupport="7.0.0.0" name="basic" order="1" version="7.197.4229.12">
+        <Property name="rulefile" value="main.db" />
+        <Property name="pluginrules" value="baseplugin.db" />
+        <Property name="schemafile" value="schema.xml" />
+        <Property name="standardplugin" value="true" />
+        <Library name="base.dll" />
+        <Property name="helpfile" value="chrome://base/locale/help.chm" />
+        <Property name="helpid" value="1000" />
+    </Plugin>
+
+    <Plugin alwayson="true" minimumDrvSupport="7.0.0.0" name="finishing" order="2" version="7.197.4229.12">
+        <Library name="base.dll" />
+        <Property name="helpfile" value="chrome://base/locale/help.chm" />
+        <Property name="helpid" value="2000" />
+        <Property name="standardplugin" value="true" />
+    </Plugin>
+
+    <Plugin alwayson="true" minimumDrvSupport="7.0.0.0" name="others" order="99" version="7.197.4229.12">
+        <Library name="base.dll" />
+        <Property name="helpfile" value="chrome://base/locale/help.chm" />
+        <Property name="helpid" value="6000" />
+        <Property name="standardplugin" value="true" />
+    </Plugin>
+</PluginGroup>

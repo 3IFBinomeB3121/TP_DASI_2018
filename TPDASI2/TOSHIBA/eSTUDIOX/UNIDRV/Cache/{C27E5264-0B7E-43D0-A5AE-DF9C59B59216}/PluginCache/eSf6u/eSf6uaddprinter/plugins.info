@@ -1,0 +1,11 @@
+<PluginGroup name="addprinter">
+    <Plugin alwayson="false" minimumDrvSupport="7.0.0.0" name="addprinter" order="101" version="7.197.4229.2">
+        <Property name="localisedname" value="$IDS_OTHER_ADDPRN_ELI;" />
+        <Property name="helpfile" value="chrome://base/locale/help.chm" />
+        <Property name="helpid" value="6100" />
+        <Property name="pluginrules" value="addprinterplugin.db" />
+        <Property name="enabledByDefault" value="true" />
+        <Property name="standardplugin" value="true" />
+        <Library entrypoint="createPlugin" name="addprinter.dll" />
+    </Plugin>
+</PluginGroup>

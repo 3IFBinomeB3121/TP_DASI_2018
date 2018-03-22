@@ -1,0 +1,12 @@
+<PluginGroup name="hsp">
+    <Plugin alwayson="false" minimumDrvSupport="7.0.0.0" name="hsp" order="6" version="7.197.4229.2">
+        <Property name="rulefile" value="hsp.db" />
+        <Property name="pluginrules" value="hspplugin.db" />
+        <Property name="disablecheckbox" value="true" />
+        <Property name="localisedname" value="$IDS_SETTING_SECURITY_PATERN;" />
+        <Property name="helpfile" value="chrome://hsp/locale/hsp.chm" />
+        <Property name="enabledByDefault" value="true" />
+        <Property name="standardplugin" value="true" />
+        <Library name="hsp.dll" />
+    </Plugin>
+</PluginGroup>
