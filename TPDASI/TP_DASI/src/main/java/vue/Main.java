@@ -8,10 +8,8 @@ package vue;
 import dao.JpaUTIL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modele.Animal;
@@ -57,13 +55,9 @@ public class Main {
         //      - Verification que l'employe selectionne est bien celui dont la durée est la plus courte
         //      - Verification de la demande d'intervention dans les 3 cas possibles
         //
-        // Reste à faire au niveau du code : 
-        //      - Cas particuliers dans une classe à part ?
-        //      - Améliorer l'affichage pour scénario (voir avec William)
-        //      - Améliorer le scénario
-        //      - Découper le code en petites méthodes ? 
+        //
         
-        // Test de inscrireClient
+        
         Integer scenario = Saisie.lireInteger("Quel scenario voulez-vous "
                 + "jouer ?\r\n 1 : Client\r\n 2 : Employé\r\n 3 : "
                 + "Demande d'intervention "
@@ -126,56 +120,78 @@ public class Main {
                     Saisie.pause();
                 }
                 Integer demanderIntervention = 0;
+                boolean demandeFini = false;
                 while (demanderIntervention != 1 && demanderIntervention != 2){
                     demanderIntervention = Saisie.lireInteger("Demander une intervention ? \r\n1 : Oui    2 : Non");
                 }
                 if (demanderIntervention == 1){
-                    Integer typeInterventionDemandee = 0;
-                    while (typeInterventionDemandee != 1 && typeInterventionDemandee != 2 && typeInterventionDemandee != 3){
-                        typeInterventionDemandee = Saisie.lireInteger("Quelle type d'intervention ?"
-                            + "\r\n1 : Incident\r\n2 : Animal\r\n3 : Livraison");
+                    while (!demandeFini){
+                        Integer typeInterventionDemandee = 0;
+                        while (typeInterventionDemandee != 1 && typeInterventionDemandee != 2 && typeInterventionDemandee != 3){
+                            typeInterventionDemandee = Saisie.lireInteger("Quelle type d'intervention ?"
+                                + "\r\n1 : Incident\r\n2 : Animal\r\n3 : Livraison");
+                        }
+                        String descriptionIntervention = Saisie.lireChaine("Commentaire sur l'intervention :");
+                        String infoSup = "";
+                        String entreprise = "";
+                        if (typeInterventionDemandee == 2){
+                            infoSup = Saisie.lireChaine("Quel type d'animal?");
+                            Animal interAnimal = new Animal(descriptionIntervention, infoSup);
+                            Intervention intAnimal = Service.demanderIntervention(connexionClient, interAnimal);
+                            Intervention etatInterAni = null;
+                            Integer confInter = Saisie.lireInteger("Confirmer la fin de l'intervention ?\r\n1 : Oui     2 : Non ");
+                            if (intAnimal != null && confInter==1){
+                                etatInterAni = Service.confirmerFinIntervention(intAnimal, "Terminée", "Résolu sans problème");
+                                Saisie.pause();
+                                System.out.println("Affichage des infos de l'intervention :\r\n" 
+                                        + etatInterAni.toString());
+                            }
+                            Saisie.pause();
+                        }
+                        else if (typeInterventionDemandee == 3){
+                            infoSup = Saisie.lireChaine("Quel objet allez-vous vous faire livrez ?");
+                            entreprise = Saisie.lireChaine("Par quelle entreprise ?");
+                            Livraison interLivraison = new Livraison(descriptionIntervention, infoSup, entreprise);
+                            Intervention intLivraison = Service.demanderIntervention(connexionClient, interLivraison);
+                            Saisie.pause();
+                            Intervention etatInterLiv = null;
+                            Integer confInter = Saisie.lireInteger("Confirmer la fin de l'intervention ?\r\n1 : Oui     2 : Non ");
+                            if (intLivraison != null && confInter==1){
+                                etatInterLiv = Service.confirmerFinIntervention(intLivraison, "Terminée", "Résolu sans problème");
+                                Saisie.pause();
+                                System.out.println("Affichage des infos de l'intervention :\r\n" 
+                                        + etatInterLiv.toString());
+                            }
+                            Saisie.pause();
+                        }
+                        else {
+                            Incident interIncident = new Incident(descriptionIntervention);
+                            Intervention intIncident = Service.demanderIntervention(connexionClient, interIncident);
+                            Saisie.pause();
+                            Intervention etatInterInci = null;
+                            Integer confInter = Saisie.lireInteger("Confirmer la fin de l'intervention ?\r\n1 : Oui     2 : Non ");
+                            if (intIncident != null && confInter==1){
+                                etatInterInci = Service.confirmerFinIntervention(intIncident, "Terminée", "Résolu sans problème");
+                                Saisie.pause();
+                                System.out.println("Affichage des infos de l'intervention :\r\n" 
+                                        + etatInterInci.toString());
+                            }
+                        }
+
+                        Saisie.pause();
+                        
+                        System.out.println("Affichage de l'historique :");
+                        chargerHistoriqueClient(connexionClient);
+                        
+                        Saisie.pause();
+                        
+                        Integer nouvelleDemande = Saisie.lireInteger("Demander une nouvelle intervention ?\r\n0 : Non     1 : Oui");
+                        if (nouvelleDemande == 0){
+                            demandeFini = true;
+                        }
                     }
-                    String descriptionIntervention = Saisie.lireChaine("Commentaire sur l'intervention :");
-                    String infoSup = "";
-                    String entreprise = "";
-                    if (typeInterventionDemandee == 2){
-                        infoSup = Saisie.lireChaine("Quel type d'animal?");
-                        Animal interAnimal = new Animal(descriptionIntervention, infoSup);
-                        Intervention intAnimal = Service.demanderIntervention(connexionClient, interAnimal);
-                        Saisie.pause();
-                        Intervention etatInterAni = Service.confirmerFinIntervention(intAnimal, "Terminée", "Résolu sans problème");
-                        Saisie.pause();
-                        System.out.println("Affichage des infos de l'intervention :\r\n" 
-                                + etatInterAni.toString());
-                        Saisie.pause();
-                    }
-                    else if (typeInterventionDemandee == 3){
-                        infoSup = Saisie.lireChaine("Quel objet allez-vous vous faire livrez ?");
-                        entreprise = Saisie.lireChaine("Par quelle entreprise ?");
-                        Livraison interLivraison = new Livraison(descriptionIntervention, infoSup, entreprise);
-                        Intervention intLivraison = Service.demanderIntervention(connexionClient, interLivraison);
-                        Saisie.pause();
-                        Intervention etatInterLiv = Service.confirmerFinIntervention(intLivraison, "Terminée", "Résolu sans problème");
-                        Saisie.pause();
-                        System.out.println("Affichage des infos de l'intervention :\r\n" 
-                                + etatInterLiv.toString());
-                        Saisie.pause();
-                    }
-                    Incident interIncident = new Incident(descriptionIntervention);
-                    Intervention intIncident = Service.demanderIntervention(connexionClient, interIncident);
-                    Saisie.pause();
-                    Intervention etatInterInci = null;
-                    if (intIncident != null){
-                        etatInterInci = Service.confirmerFinIntervention(intIncident, "Terminée", "Résolu sans problème");
-                        Saisie.pause();
-                        System.out.println("Affichage des infos de l'intervention :\r\n" 
-                                + etatInterInci.toString());
-                    }
-                    
-                    Saisie.pause();
-                    chargerHistoriqueClient(connexionClient);
-                    Saisie.pause();
                 }
+                    
                 Saisie.pause();
                 break;
             case 2:
@@ -188,6 +204,7 @@ public class Main {
                 System.out.println("Affichage des informations de l'employé : ");
                 System.out.println(emp.toString());
                 Saisie.pause();
+                System.out.println("Affichage des opérations du jour\r\n");
                 Service.consulterOpeDuJour(emp);
                 Saisie.pause();
                 break;
@@ -214,10 +231,12 @@ public class Main {
                 break;
             default: // Par défaut, on lance nos tests unitaires
                     // permettant de tester chaque méthode séparement
+                
+                // Test de inscrireClient
                 String dateRandom = "12-05-1982";
                 Date dateFictive = new Date();
                 try {
-                    d1 = sdf.parse(dateRandom);
+                    dateFictive = sdf.parse(dateRandom);
                 } catch (ParseException pe){
                     System.out.println("erreur pour parser la date");
                 }
